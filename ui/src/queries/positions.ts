@@ -98,7 +98,7 @@ function useGetPositions(address?: string) {
       body: JSON.stringify({ query: body(address?.toLowerCase()) }),
     });
     const { data }: GraphResponse = await response.json();
-    console.log(data);
+
     return {
       futuresStats: data.futuresStats,
       futuresPositions: data.futuresPositions
@@ -129,5 +129,6 @@ export default useGetPositions;
 function toDateTime(secs: number) {
   var t = new Date(1970, 0, 1);
   t.setSeconds(secs);
+  console.log(t.toLocaleDateString());
   return t;
 }

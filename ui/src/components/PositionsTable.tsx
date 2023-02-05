@@ -9,13 +9,13 @@ import {
   Tr,
   useToast,
 } from '@chakra-ui/react';
-import { FuturePosition, FuturesStats } from '../queries/positions';
+import { FuturePosition } from '../queries/positions';
 
 export const PositionsTable: FC<{
   positions: FuturePosition[];
-  stats: FuturesStats[];
-}> = ({ positions, stats }) => {
+}> = ({ positions }) => {
   const toast = useToast();
+  console.log(positions);
   return (
     <TableContainer w="100%">
       <Table>
@@ -24,7 +24,11 @@ export const PositionsTable: FC<{
             <Th>Address</Th>
             <Th>Asset</Th>
             <Th>Market</Th>
+            <Th>Exit Price</Th>
             <Th>Liquidated</Th>
+            <Th>Open</Th>
+            <Th>Opened at</Th>
+            <Th>Closed at</Th>
           </Tr>
         </Thead>
         <Tbody>
@@ -51,7 +55,11 @@ export const PositionsTable: FC<{
               </Td>
               <Td>{position.asset}</Td>
               <Td>{position.marketKey}</Td>
+              <Td>${Number(position.exitPrice) / 1e18}</Td>
               <Td>{position.isLiquidated ? `💀` : `NO`}</Td>
+              <Td>{position.isOpen ? `✅` : `❌`}</Td>
+              <Td>{position?.openTimestamp}</Td>
+              <Td>{position?.closeTimestamp}</Td>
             </Tr>
           ))}
         </Tbody>
