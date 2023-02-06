@@ -42,6 +42,8 @@ export interface FilterOptions {
   open: boolean;
   openedAt: number;
   closedAt: number;
+  deactivateLiquidated: boolean;
+  deactivateOpen: boolean;
 }
 
 const body = (
@@ -50,46 +52,26 @@ const body = (
   address?: string,
   skip?: number
 ) => {
-  if (address) {
-    return `query futurePositions {
-    futuresPositions(first: 1000, skip: ${skip}, where: {account: "${address}"}) {
-      id
-      account
-      isLiquidated
-      asset
-      marketKey
-      isOpen
-      openTimestamp
-      closeTimestamp
-      margin
-      initialMargin
-      entryPrice
-      exitPrice
-    }
-    futuresStats(where: {account: "${address}"}) {
-      account
-      feesPaid
-      liquidations
-      totalTrades
-      pnl
-      pnlWithFeesPaid
-      crossMarginVolume
-      totalVolume
-    }
-  }
-`;
-  }
   return `query futurePositions {
     futuresPositions(skip: ${skip}, first: 1000,
       orderBy: "${sortConfig[0]}", orderDirection: "${
     sortConfig[1] ? 'desc' : 'asc'
   }", where: {
-    asset: "${utils.formatBytes32String(filterOptions.asset)}",
-    isLiquidated: ${filterOptions.liquidated},
-    isOpen: ${filterOptions.open},
+    ${address ? `account: "${address.toLowerCase()}",` : ''}
+    ${
+      filterOptions.asset === 'all'
+        ? ''
+        : `asset: "${utils.formatBytes32String(filterOptions.asset)}"`
+    },
+    ${
+      filterOptions.deactivateLiquidated
+        ? ''
+        : `isLiquidated: ${filterOptions.liquidated},`
+    }
+    ${filterOptions.deactivateOpen ? '' : `isOpen: ${filterOptions.open},`}
     openTimestamp_lt: "${filterOptions.openedAt}",
     ${
-      !filterOptions.open
+      !filterOptions.deactivateOpen && !filterOptions.open
         ? `closeTimestamp_gt: "${filterOptions.closedAt}"`
         : ''
     }
@@ -107,7 +89,9 @@ const body = (
       entryPrice
       exitPrice
     }
-    futuresStats(first: 1) {
+    futuresStats(first: 1, where: {${
+      address ? `account: "${address.toLowerCase()}",` : ''
+    }}) {
       account
       feesPaid
       liquidations
@@ -132,16 +116,6 @@ const refetchMore = async ({
   filterOptions: FilterOptions;
   sortConfig: SortConfig;
 }) => {
-  try {
-    const response = await fetch(OPTIMISM_GRAPH_URL, {
-      method: 'POST',
-      body: JSON.stringify({
-        query: body(filterOptions, sortConfig, address?.toLowerCase(), skip),
-      }),
-    });
-  } catch (error) {
-    console.log(error);
-  }
   const response = await fetch(OPTIMISM_GRAPH_URL, {
     method: 'POST',
     body: JSON.stringify({

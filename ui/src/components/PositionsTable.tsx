@@ -1,6 +1,7 @@
 import { FC, useState } from 'react';
 import {
   Button,
+  Checkbox,
   Flex,
   Input,
   Radio,
@@ -21,6 +22,7 @@ import {
 import useGetPositions from '../queries/positions';
 import { useForm } from 'react-hook-form';
 import { MARKETS } from '../utils/constants';
+import { useParams } from 'react-router-dom';
 
 export type SortConfig = [
   (
@@ -37,17 +39,18 @@ export type SortConfig = [
   boolean
 ];
 
-export const PositionsTable: FC<{
-  address?: string;
-}> = ({ address }) => {
+export const PositionsTable: FC = () => {
+  const params = useParams();
   const toast = useToast();
   const [isRefetchLoading, setRefetchLoading] = useState(false);
   const [sortConfig, setSortConfig] = useState<SortConfig>(['account', true]);
   const { register, getValues, setValue, watch } = useForm({
     defaultValues: {
-      asset: 'sETH',
-      liquidated: true,
+      asset: 'all',
+      liquidated: false,
+      deactivateLiquidated: true,
       open: false,
+      deactivateOpen: true,
       openedAt: new Date(),
       closedAt: monthAgo(),
     },
@@ -57,7 +60,7 @@ export const PositionsTable: FC<{
     isLoading,
     refetch,
   } = useGetPositions({
-    address,
+    address: params.walletAddress,
     filterOptions: {
       ...watch(),
       openedAt: Math.round(watch('openedAt').getTime() / 1000),
@@ -91,10 +94,12 @@ export const PositionsTable: FC<{
                 {market}
               </Radio>
             ))}
+            <Radio value="all">All</Radio>
           </Flex>
         </RadioGroup>
         <Stack gap="2" ml="2">
           <Switch
+            disabled={watch('deactivateLiquidated')}
             onChange={() => {
               setValue('liquidated', !getValues('liquidated'));
               if (getValues('liquidated')) {
@@ -105,7 +110,19 @@ export const PositionsTable: FC<{
           >
             Liquidated
           </Switch>
+          <Checkbox
+            onChange={() => {
+              setValue(
+                'deactivateLiquidated',
+                !getValues('deactivateLiquidated')
+              );
+            }}
+            isChecked={watch('deactivateLiquidated')}
+          >
+            Deactivate liquidated option
+          </Checkbox>
           <Switch
+            disabled={watch('deactivateOpen')}
             onChange={() => {
               setValue('open', !getValues('open'));
               if (getValues('open')) {
@@ -116,6 +133,14 @@ export const PositionsTable: FC<{
           >
             Open
           </Switch>
+          <Checkbox
+            onChange={() => {
+              setValue('deactivateOpen', !getValues('deactivateOpen'));
+            }}
+            isChecked={watch('deactivateOpen')}
+          >
+            Deactivate open option
+          </Checkbox>
           <Text>Opened At (default: now)</Text>
           <Input type="date" {...register('openedAt', { valueAsDate: true })} />
           <Text>Closed At (default: one month ago)</Text>
@@ -128,131 +153,158 @@ export const PositionsTable: FC<{
       {isLoading || isRefetchLoading ? (
         <Spinner color="cyan.500" />
       ) : (
-        <TableContainer w="100%">
-          <Table>
-            <Thead>
-              <Tr>
-                <Th
-                  cursor="pointer"
-                  onClick={() => {
-                    setSortConfig((state) => ['account', !state[1]]);
-                    triggerRefetch();
-                  }}
-                >
-                  Address
-                </Th>
-                <Th
-                  cursor="pointer"
-                  onClick={() => {
-                    setSortConfig((state) => ['asset', !state[1]]);
-                    triggerRefetch();
-                  }}
-                >
-                  Asset
-                </Th>
-                <Th
-                  cursor="pointer"
-                  onClick={() => {
-                    setSortConfig((state) => ['market', !state[1]]);
-                    triggerRefetch();
-                  }}
-                >
-                  Market
-                </Th>
-                <Th
-                  cursor="pointer"
-                  onClick={() => {
-                    setSortConfig((state) => ['entryPrice', !state[1]]);
-                    triggerRefetch();
-                  }}
-                >
-                  Entry Price
-                </Th>
-                <Th
-                  cursor="pointer"
-                  onClick={() => {
-                    setSortConfig((state) => ['exitPrice', !state[1]]);
-                    triggerRefetch();
-                  }}
-                >
-                  Exit Price
-                </Th>
-                <Th
-                  cursor="pointer"
-                  onClick={() => {
-                    setSortConfig((state) => ['isLiquidated', !state[1]]);
-                    triggerRefetch();
-                  }}
-                >
-                  Liquidated
-                </Th>
-                <Th
-                  cursor="pointer"
-                  onClick={() => {
-                    setSortConfig((state) => ['isOpen', !state[1]]);
-                    triggerRefetch();
-                  }}
-                >
-                  Open
-                </Th>
-                <Th
-                  cursor="pointer"
-                  onClick={() => {
-                    setSortConfig((state) => ['openTimestamp', !state[1]]);
-                    triggerRefetch();
-                  }}
-                >
-                  Opened at
-                </Th>
-                <Th
-                  cursor="pointer"
-                  onClick={() => {
-                    setSortConfig((state) => ['closeTimestamp', !state[1]]);
-                    triggerRefetch();
-                  }}
-                >
-                  Closed at
-                </Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {!!positions?.futuresPositions.length &&
-                positions.futuresPositions.map((position, index) => (
-                  <Tr key={position.account.concat(index.toString())}>
-                    <Td
-                      cursor="pointer"
-                      onClick={() => {
-                        toast({
-                          title: 'Copy to clipboard',
-                          status: 'success',
-                          isClosable: true,
-                          duration: 5000,
-                        });
-                        navigator.clipboard.writeText(position.account);
-                      }}
-                    >
-                      {position.account
-                        .substring(0, 5)
-                        .concat('...')
-                        .concat(
-                          position.account.substring(
-                            position.account.length - 5
-                          )
-                        )}
-                    </Td>
-                    <Td>{position.asset}</Td>
-                    <Td>{position.marketKey}</Td>
-                    <Td>${(Number(position.entryPrice) / 1e18).toFixed(2)}</Td>
-                    <Td>${(Number(position.exitPrice) / 1e18).toFixed(2)}</Td>
-                    <Td>{position.isLiquidated ? `💀` : `NO`}</Td>
-                    <Td>{position.isOpen ? `✅` : `❌`}</Td>
-                    <Td>{position?.openTimestamp}</Td>
-                    <Td>{position?.closeTimestamp}</Td>
-                  </Tr>
-                ))}
-            </Tbody>
-          </Table>
-        </TableContainer>
+        <>
+          {positions?.futuresStats.map((stats) => {
+            return (
+              <Flex flexDir="column" key="only-one">
+                <Text>
+                  Fees Paid: ${(Number(stats.feesPaid) / 1e18).toFixed(2)}
+                </Text>
+                <Text>Liquidations: {stats.liquidations}</Text>
+                <Text>PNL: ${(Number(stats.pnl) / 1e18).toFixed(2)}</Text>
+                <Text>
+                  PNL Minus Fees: $
+                  {(Number(stats.pnlWithFeesPaid) / 1e18).toFixed(2)}
+                </Text>
+                <Text>Total trades: {stats.totalTrades}</Text>
+                <Text>
+                  Total volume: ${(Number(stats.totalVolume) / 1e18).toFixed(2)}
+                </Text>
+                <Text>
+                  Cross Margin Volume: $
+                  {(Number(stats.crossMarginVolume) / 1e18).toFixed(2)}
+                </Text>
+              </Flex>
+            );
+          })}
+          <TableContainer w="100%">
+            <Table>
+              <Thead>
+                <Tr>
+                  <Th
+                    cursor="pointer"
+                    onClick={() => {
+                      setSortConfig((state) => ['account', !state[1]]);
+                      triggerRefetch();
+                    }}
+                  >
+                    Address
+                  </Th>
+                  <Th
+                    cursor="pointer"
+                    onClick={() => {
+                      setSortConfig((state) => ['asset', !state[1]]);
+                      triggerRefetch();
+                    }}
+                  >
+                    Asset
+                  </Th>
+                  <Th
+                    cursor="pointer"
+                    onClick={() => {
+                      setSortConfig((state) => ['market', !state[1]]);
+                      triggerRefetch();
+                    }}
+                  >
+                    Market
+                  </Th>
+                  <Th
+                    cursor="pointer"
+                    onClick={() => {
+                      setSortConfig((state) => ['entryPrice', !state[1]]);
+                      triggerRefetch();
+                    }}
+                  >
+                    Entry Price
+                  </Th>
+                  <Th
+                    cursor="pointer"
+                    onClick={() => {
+                      setSortConfig((state) => ['exitPrice', !state[1]]);
+                      triggerRefetch();
+                    }}
+                  >
+                    Exit Price
+                  </Th>
+                  <Th
+                    cursor="pointer"
+                    onClick={() => {
+                      setSortConfig((state) => ['isLiquidated', !state[1]]);
+                      triggerRefetch();
+                    }}
+                  >
+                    Liquidated
+                  </Th>
+                  <Th
+                    cursor="pointer"
+                    onClick={() => {
+                      setSortConfig((state) => ['isOpen', !state[1]]);
+                      triggerRefetch();
+                    }}
+                  >
+                    Open
+                  </Th>
+                  <Th
+                    cursor="pointer"
+                    onClick={() => {
+                      setSortConfig((state) => ['openTimestamp', !state[1]]);
+                      triggerRefetch();
+                    }}
+                  >
+                    Opened at
+                  </Th>
+                  <Th
+                    cursor="pointer"
+                    onClick={() => {
+                      setSortConfig((state) => ['closeTimestamp', !state[1]]);
+                      triggerRefetch();
+                    }}
+                  >
+                    Closed at
+                  </Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {!!positions?.futuresPositions.length &&
+                  positions.futuresPositions.map((position, index) => (
+                    <Tr key={position.account.concat(index.toString())}>
+                      <Td
+                        cursor="pointer"
+                        onClick={() => {
+                          toast({
+                            title: 'Copy to clipboard',
+                            status: 'success',
+                            isClosable: true,
+                            duration: 5000,
+                          });
+                          navigator.clipboard.writeText(position.account);
+                        }}
+                      >
+                        {position.account
+                          .substring(0, 5)
+                          .concat('...')
+                          .concat(
+                            position.account.substring(
+                              position.account.length - 5
+                            )
+                          )}
+                      </Td>
+                      <Td>{position.asset}</Td>
+                      <Td>{position.marketKey}</Td>
+                      <Td>
+                        ${(Number(position.entryPrice) / 1e18).toFixed(2)}
+                      </Td>
+                      <Td>${(Number(position.exitPrice) / 1e18).toFixed(2)}</Td>
+                      <Td>{position.isLiquidated ? `💀` : `NO`}</Td>
+                      <Td>{position.isOpen ? `✅` : `❌`}</Td>
+                      <Td>{position?.openTimestamp}</Td>
+                      <Td>{position?.closeTimestamp}</Td>
+                    </Tr>
+                  ))}
+              </Tbody>
+            </Table>
+          </TableContainer>
+        </>
       )}
     </>
   );
