@@ -79,17 +79,20 @@ const body = (
   }
 `;
   }
-
   return `query futurePositions {
     futuresPositions(skip: ${skip}, first: 1000,
       orderBy: "${sortConfig[0]}", orderDirection: "${
     sortConfig[1] ? 'desc' : 'asc'
   }", where: {
     asset: "${utils.formatBytes32String(filterOptions.asset)}",
-    isLiquidated: ${filterOptions.liquidated}
-    isOpen: ${filterOptions.open}
-    openTimestamp_lt: "${filterOptions.openedAt}"
-    closeTimestamp_gt: "${filterOptions.closedAt}"
+    isLiquidated: ${filterOptions.liquidated},
+    isOpen: ${filterOptions.open},
+    openTimestamp_lt: "${filterOptions.openedAt}",
+    ${
+      !filterOptions.open
+        ? `closeTimestamp_gt: "${filterOptions.closedAt}"`
+        : ''
+    }
   }) {
       id
       account
@@ -129,6 +132,16 @@ const refetchMore = async ({
   filterOptions: FilterOptions;
   sortConfig: SortConfig;
 }) => {
+  try {
+    const response = await fetch(OPTIMISM_GRAPH_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        query: body(filterOptions, sortConfig, address?.toLowerCase(), skip),
+      }),
+    });
+  } catch (error) {
+    console.log(error);
+  }
   const response = await fetch(OPTIMISM_GRAPH_URL, {
     method: 'POST',
     body: JSON.stringify({
@@ -169,6 +182,7 @@ function useGetPositions({
         filterOptions,
         sortConfig,
       });
+
       return {
         futuresStats: data?.futuresStats,
         futuresPositions: data.futuresPositions
@@ -179,9 +193,12 @@ function useGetPositions({
             openTimestamp: toDateTime(
               Number(position.openTimestamp)
             ).toLocaleDateString(),
-            closeTimestamp: toDateTime(
-              Number(position.closeTimestamp)
-            ).toLocaleDateString(),
+            closeTimestamp:
+              position.closeTimestamp === null
+                ? '-'
+                : toDateTime(
+                    Number(position.closeTimestamp)
+                  ).toLocaleDateString(),
           }))
           .filter((position) => {
             if (address) {

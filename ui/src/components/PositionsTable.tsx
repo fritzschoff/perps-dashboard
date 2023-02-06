@@ -1,5 +1,6 @@
 import { FC, useState } from 'react';
 import {
+  Button,
   Flex,
   Input,
   Radio,
@@ -40,8 +41,9 @@ export const PositionsTable: FC<{
   address?: string;
 }> = ({ address }) => {
   const toast = useToast();
+  const [isRefetchLoading, setRefetchLoading] = useState(false);
   const [sortConfig, setSortConfig] = useState<SortConfig>(['account', true]);
-  const { register, getValues, setValue } = useForm({
+  const { register, getValues, setValue, watch } = useForm({
     defaultValues: {
       asset: 'sETH',
       liquidated: true,
@@ -50,15 +52,24 @@ export const PositionsTable: FC<{
       closedAt: monthAgo(),
     },
   });
-  const { data: positions, isLoading } = useGetPositions({
+  const {
+    data: positions,
+    isLoading,
+    refetch,
+  } = useGetPositions({
     address,
     filterOptions: {
-      ...getValues(),
-      openedAt: Math.round(getValues('openedAt').getTime() / 1000),
-      closedAt: Math.round(getValues('closedAt').getTime() / 1000),
+      ...watch(),
+      openedAt: Math.round(watch('openedAt').getTime() / 1000),
+      closedAt: Math.round(watch('closedAt').getTime() / 1000),
     },
     sortConfig,
   });
+
+  const triggerRefetch = () => {
+    setRefetchLoading(true);
+    refetch().then(() => setRefetchLoading(false));
+  };
 
   return (
     <>
@@ -67,7 +78,7 @@ export const PositionsTable: FC<{
           onChange={(e) => {
             setValue('asset', e);
           }}
-          value={getValues('asset')}
+          value={watch('asset')}
         >
           <Flex
             flexWrap="wrap"
@@ -86,16 +97,22 @@ export const PositionsTable: FC<{
           <Switch
             onChange={() => {
               setValue('liquidated', !getValues('liquidated'));
+              if (getValues('liquidated')) {
+                setValue('open', false);
+              }
             }}
-            isChecked={getValues('liquidated')}
+            isChecked={watch('liquidated')}
           >
             Liquidated
           </Switch>
           <Switch
             onChange={() => {
               setValue('open', !getValues('open'));
+              if (getValues('open')) {
+                setValue('liquidated', false);
+              }
             }}
-            isChecked={getValues('open')}
+            isChecked={watch('open')}
           >
             Open
           </Switch>
@@ -105,7 +122,10 @@ export const PositionsTable: FC<{
           <Input type="date" {...register('closedAt', { valueAsDate: true })} />
         </Stack>
       </Flex>
-      {isLoading ? (
+      <Button onClick={() => triggerRefetch()} disabled={isLoading}>
+        Fetch
+      </Button>
+      {isLoading || isRefetchLoading ? (
         <Spinner color="cyan.500" />
       ) : (
         <TableContainer w="100%">
@@ -114,71 +134,82 @@ export const PositionsTable: FC<{
               <Tr>
                 <Th
                   cursor="pointer"
-                  onClick={() =>
-                    setSortConfig((state) => ['account', !state[1]])
-                  }
+                  onClick={() => {
+                    setSortConfig((state) => ['account', !state[1]]);
+                    triggerRefetch();
+                  }}
                 >
                   Address
                 </Th>
                 <Th
                   cursor="pointer"
-                  onClick={() => setSortConfig((state) => ['asset', !state[1]])}
+                  onClick={() => {
+                    setSortConfig((state) => ['asset', !state[1]]);
+                    triggerRefetch();
+                  }}
                 >
                   Asset
                 </Th>
                 <Th
                   cursor="pointer"
-                  onClick={() =>
-                    setSortConfig((state) => ['market', !state[1]])
-                  }
+                  onClick={() => {
+                    setSortConfig((state) => ['market', !state[1]]);
+                    triggerRefetch();
+                  }}
                 >
                   Market
                 </Th>
                 <Th
                   cursor="pointer"
-                  onClick={() =>
-                    setSortConfig((state) => ['entryPrice', !state[1]])
-                  }
+                  onClick={() => {
+                    setSortConfig((state) => ['entryPrice', !state[1]]);
+                    triggerRefetch();
+                  }}
                 >
                   Entry Price
                 </Th>
                 <Th
                   cursor="pointer"
-                  onClick={() =>
-                    setSortConfig((state) => ['exitPrice', !state[1]])
-                  }
+                  onClick={() => {
+                    setSortConfig((state) => ['exitPrice', !state[1]]);
+                    triggerRefetch();
+                  }}
                 >
                   Exit Price
                 </Th>
                 <Th
                   cursor="pointer"
-                  onClick={() =>
-                    setSortConfig((state) => ['isLiquidated', !state[1]])
-                  }
+                  onClick={() => {
+                    setSortConfig((state) => ['isLiquidated', !state[1]]);
+                    triggerRefetch();
+                  }}
                 >
                   Liquidated
                 </Th>
                 <Th
                   cursor="pointer"
-                  onClick={() =>
-                    setSortConfig((state) => ['isOpen', !state[1]])
-                  }
+                  onClick={() => {
+                    setSortConfig((state) => ['isOpen', !state[1]]);
+                    triggerRefetch();
+                  }}
                 >
                   Open
                 </Th>
                 <Th
                   cursor="pointer"
-                  onClick={() =>
-                    setSortConfig((state) => ['openTimestamp', !state[1]])
-                  }
+                  onClick={() => {
+                    setSortConfig((state) => ['openTimestamp', !state[1]]);
+                    triggerRefetch();
+                  }}
                 >
                   Opened at
                 </Th>
                 <Th
                   cursor="pointer"
-                  onClick={() =>
-                    setSortConfig((state) => ['closeTimestamp', !state[1]])
-                  }
+                  onClick={() => {
+                    setSortConfig((state) => ['closeTimestamp', !state[1]]);
+                    triggerRefetch();
+                  }}
                 >
                   Closed at
                 </Th>
