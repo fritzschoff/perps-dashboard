@@ -10,13 +10,13 @@ import {
 } from '@chakra-ui/react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { PositionsTable } from './components/PositionsTable';
 
 function App() {
   const navigate = useNavigate();
   const { register, getValues } = useForm({
     defaultValues: { address: '' },
   });
-
   const { colorMode, toggleColorMode } = useColorMode();
   useEffect(() => {
     if (colorMode === 'light') {
@@ -38,6 +38,7 @@ function App() {
       <Link to="/actions" style={{ textDecorationLine: 'underline' }}>
         See all actions that happened
       </Link>
+      <PositionsTable />
     </Flex>
   );
 }

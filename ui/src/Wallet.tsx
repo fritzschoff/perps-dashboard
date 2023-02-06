@@ -8,7 +8,7 @@ export const Wallet: FC = () => {
   const params = useParams();
   const { data, isLoading } = useGetPositions(params.walletAddress);
   return (
-    <Flex flexDir="column">
+    <Flex flexDir="column" p="2">
       <Link to="/" style={{ marginBottom: '20px' }}>
         Back
       </Link>
@@ -19,21 +19,26 @@ export const Wallet: FC = () => {
         <>
           {data?.futuresStats.map((stats) => (
             <Flex flexDir="column" key="only-one">
-              <Text>Fees Paid: ${Number(stats.feesPaid) / 1e18}</Text>
-              <Text>Liquidations: {stats.liquidations}</Text>
-              <Text>PNL: ${Number(stats.pnl) / 1e18}</Text>
               <Text>
-                PNL Minus Fees: ${Number(stats.pnlWithFeesPaid) / 1e18}
+                Fees Paid: ${(Number(stats.feesPaid) / 1e18).toFixed(2)}
+              </Text>
+              <Text>Liquidations: {stats.liquidations}</Text>
+              <Text>PNL: ${(Number(stats.pnl) / 1e18).toFixed(2)}</Text>
+              <Text>
+                PNL Minus Fees: $
+                {(Number(stats.pnlWithFeesPaid) / 1e18).toFixed(2)}
               </Text>
               <Text>Total trades: {stats.totalTrades}</Text>
-              <Text>Total volume: {stats.totalVolume}</Text>
-              <Text>Cross Margin Volume: {stats.crossMarginVolume}</Text>
+              <Text>
+                Total volume: ${(Number(stats.totalVolume) / 1e18).toFixed(2)}
+              </Text>
+              <Text>
+                Cross Margin Volume: $
+                {(Number(stats.crossMarginVolume) / 1e18).toFixed(2)}
+              </Text>
             </Flex>
           ))}
-          <PositionsTable
-            positions={data?.futuresPositions || []}
-            stats={data?.futuresStats || []}
-          />
+          <PositionsTable positions={data?.futuresPositions || []} />
         </>
       )}
     </Flex>

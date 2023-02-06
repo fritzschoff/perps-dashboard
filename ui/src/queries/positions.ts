@@ -1,6 +1,7 @@
 import { useQuery } from 'react-query';
 import { OPTIMISM_GRAPH_URL } from '../utils/constants';
 import { utils } from 'ethers';
+import { SortConfig } from '../components/PositionsTable';
 
 interface GraphResponse {
   data: {
@@ -20,6 +21,7 @@ export interface FuturePosition {
   closeTimestamp: string;
   margin: string;
   initialMargin: string;
+  entryPrice: string;
   exitPrice: string;
 }
 
@@ -34,10 +36,23 @@ export interface FuturesStats {
   totalVolume: string;
 }
 
-const body = (address?: string) => {
+export interface FilterOptions {
+  asset: string;
+  liquidated: boolean;
+  open: boolean;
+  openedAt: number;
+  closedAt: number;
+}
+
+const body = (
+  filterOptions: FilterOptions,
+  sortConfig: SortConfig,
+  address?: string,
+  skip?: number
+) => {
   if (address) {
     return `query futurePositions {
-    futuresPositions(first: 1000, where: {account: "${address}"}) {
+    futuresPositions(first: 1000, skip: ${skip}, where: {account: "${address}"}) {
       id
       account
       isLiquidated
@@ -48,6 +63,7 @@ const body = (address?: string) => {
       closeTimestamp
       margin
       initialMargin
+      entryPrice
       exitPrice
     }
     futuresStats(where: {account: "${address}"}) {
@@ -63,8 +79,18 @@ const body = (address?: string) => {
   }
 `;
   }
+
   return `query futurePositions {
-    futuresPositions {
+    futuresPositions(skip: ${skip}, first: 1000,
+      orderBy: "${sortConfig[0]}", orderDirection: "${
+    sortConfig[1] ? 'desc' : 'asc'
+  }", where: {
+    asset: "${utils.formatBytes32String(filterOptions.asset)}",
+    isLiquidated: ${filterOptions.liquidated}
+    isOpen: ${filterOptions.open}
+    openTimestamp_lt: "${filterOptions.openedAt}"
+    closeTimestamp_gt: "${filterOptions.closedAt}"
+  }) {
       id
       account
       isLiquidated
@@ -75,9 +101,10 @@ const body = (address?: string) => {
       closeTimestamp
       margin
       initialMargin
+      entryPrice
       exitPrice
     }
-    futuresStats {
+    futuresStats(first: 1) {
       account
       feesPaid
       liquidations
@@ -91,44 +118,90 @@ const body = (address?: string) => {
 `;
 };
 
-function useGetPositions(address?: string) {
-  return useQuery(['positions', address?.toString()], async () => {
-    const response = await fetch(OPTIMISM_GRAPH_URL, {
-      method: 'POST',
-      body: JSON.stringify({ query: body(address?.toLowerCase()) }),
-    });
-    const { data }: GraphResponse = await response.json();
+const refetchMore = async ({
+  address,
+  skip,
+  filterOptions,
+  sortConfig,
+}: {
+  address?: string;
+  skip: number;
+  filterOptions: FilterOptions;
+  sortConfig: SortConfig;
+}) => {
+  const response = await fetch(OPTIMISM_GRAPH_URL, {
+    method: 'POST',
+    body: JSON.stringify({
+      query: body(filterOptions, sortConfig, address?.toLowerCase(), skip),
+    }),
+  });
 
-    return {
-      futuresStats: data.futuresStats,
-      futuresPositions: data.futuresPositions
-        .map((position) => ({
-          ...position,
-          asset: utils.parseBytes32String(position.asset),
-          marketKey: utils.parseBytes32String(position.marketKey),
-          openTimestamp: toDateTime(
-            Number(position.openTimestamp)
-          ).toLocaleDateString(),
-          closeTimestamp: toDateTime(
-            Number(position.closeTimestamp)
-          ).toLocaleDateString(),
-        }))
-        .filter((position) => {
-          if (address) {
-            if (address === position.account) return true;
-            return false;
-          }
-          return true;
-        }) as FuturePosition[],
-    };
+  const { data }: GraphResponse = await response.json();
+  if (!!data?.futuresPositions.length) {
+    const moreRes = await refetchMore({
+      filterOptions,
+      sortConfig,
+      address,
+      skip: skip + 1000,
+    });
+    if (moreRes?.futuresPositions.length)
+      data.futuresPositions = data.futuresPositions.concat(
+        moreRes?.futuresPositions
+      );
+  }
+  return data;
+};
+
+function useGetPositions({
+  address,
+  filterOptions,
+  sortConfig,
+}: {
+  address?: string;
+  filterOptions: FilterOptions;
+  sortConfig: SortConfig;
+}) {
+  return useQuery(['positions', address?.toString()], async () => {
+    try {
+      const data = await refetchMore({
+        address,
+        skip: 0,
+        filterOptions,
+        sortConfig,
+      });
+      return {
+        futuresStats: data?.futuresStats,
+        futuresPositions: data.futuresPositions
+          .map((position) => ({
+            ...position,
+            asset: utils.parseBytes32String(position.asset),
+            marketKey: utils.parseBytes32String(position.marketKey),
+            openTimestamp: toDateTime(
+              Number(position.openTimestamp)
+            ).toLocaleDateString(),
+            closeTimestamp: toDateTime(
+              Number(position.closeTimestamp)
+            ).toLocaleDateString(),
+          }))
+          .filter((position) => {
+            if (address) {
+              if (address === position.account) return true;
+              return false;
+            }
+            return true;
+          }) as FuturePosition[],
+      };
+    } catch (error) {
+      console.error(error);
+      return { futuresPositions: [], futuresStats: [] };
+    }
   });
 }
 
 export default useGetPositions;
 
 function toDateTime(secs: number) {
-  var t = new Date(1970, 0, 1);
+  const t = new Date(1970, 0, 1);
   t.setSeconds(secs);
-  console.log(t.toLocaleDateString());
   return t;
 }
