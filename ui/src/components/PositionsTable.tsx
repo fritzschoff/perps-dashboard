@@ -51,8 +51,8 @@ export const PositionsTable: FC = () => {
       deactivateLiquidated: true,
       open: false,
       deactivateOpen: true,
-      openedAt: new Date(),
-      closedAt: monthAgo(),
+      openedAt: monthAgo(),
+      closedAt: new Date(),
     },
   });
   const {
@@ -97,7 +97,7 @@ export const PositionsTable: FC = () => {
             <Radio value="all">All</Radio>
           </Flex>
         </RadioGroup>
-        <Stack gap="2" ml="2">
+        <Stack gap="2">
           <Switch
             disabled={watch('deactivateLiquidated')}
             onChange={() => {
@@ -141,9 +141,11 @@ export const PositionsTable: FC = () => {
           >
             Deactivate open option
           </Checkbox>
-          <Text>Opened At (default: now)</Text>
+        </Stack>
+        <Stack gap="2">
+          <Text>Opened At (default: one month ago)</Text>
           <Input type="date" {...register('openedAt', { valueAsDate: true })} />
-          <Text>Closed At (default: one month ago)</Text>
+          <Text>Closed At (default: now)</Text>
           <Input type="date" {...register('closedAt', { valueAsDate: true })} />
         </Stack>
       </Flex>

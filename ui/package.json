@@ -13,6 +13,7 @@
     "@chakra-ui/react": "^2.4.9",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
+    "@synthetixio/contracts": "^1.1.7",
     "@synthetixio/v3-theme": "^1.1.0",
     "ethers": "^5.4.0",
     "framer-motion": "^9.0.1",
