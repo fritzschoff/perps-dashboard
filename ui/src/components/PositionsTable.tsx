@@ -154,29 +154,31 @@ export const PositionsTable: FC = () => {
         <Spinner color="cyan.500" />
       ) : (
         <>
-          {positions?.futuresStats.map((stats) => {
-            return (
-              <Flex flexDir="column" key="only-one">
-                <Text>
-                  Fees Paid: ${(Number(stats.feesPaid) / 1e18).toFixed(2)}
-                </Text>
-                <Text>Liquidations: {stats.liquidations}</Text>
-                <Text>PNL: ${(Number(stats.pnl) / 1e18).toFixed(2)}</Text>
-                <Text>
-                  PNL Minus Fees: $
-                  {(Number(stats.pnlWithFeesPaid) / 1e18).toFixed(2)}
-                </Text>
-                <Text>Total trades: {stats.totalTrades}</Text>
-                <Text>
-                  Total volume: ${(Number(stats.totalVolume) / 1e18).toFixed(2)}
-                </Text>
-                <Text>
-                  Cross Margin Volume: $
-                  {(Number(stats.crossMarginVolume) / 1e18).toFixed(2)}
-                </Text>
-              </Flex>
-            );
-          })}
+          {params?.walletAddress &&
+            positions?.futuresStats.map((stats) => {
+              return (
+                <Flex flexDir="column" key="only-one">
+                  <Text>
+                    Fees Paid: ${(Number(stats.feesPaid) / 1e18).toFixed(2)}
+                  </Text>
+                  <Text>Liquidations: {stats.liquidations}</Text>
+                  <Text>PNL: ${(Number(stats.pnl) / 1e18).toFixed(2)}</Text>
+                  <Text>
+                    PNL Minus Fees: $
+                    {(Number(stats.pnlWithFeesPaid) / 1e18).toFixed(2)}
+                  </Text>
+                  <Text>Total trades: {stats.totalTrades}</Text>
+                  <Text>
+                    Total volume: $
+                    {(Number(stats.totalVolume) / 1e18).toFixed(2)}
+                  </Text>
+                  <Text>
+                    Cross Margin Volume: $
+                    {(Number(stats.crossMarginVolume) / 1e18).toFixed(2)}
+                  </Text>
+                </Flex>
+              );
+            })}
           <TableContainer w="100%">
             <Table>
               <Thead>
