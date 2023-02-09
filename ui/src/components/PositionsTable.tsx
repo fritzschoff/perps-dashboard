@@ -403,7 +403,11 @@ export const PositionsTable: FC = () => {
                       <Td>
                         ${(Number(position.entryPrice) / 1e18).toFixed(2)}
                       </Td>
-                      <Td>${(Number(position.exitPrice) / 1e18).toFixed(2)}</Td>
+                      <Td>
+                        {position.isOpen
+                          ? '-'
+                          : `${(Number(position.exitPrice) / 1e18).toFixed(2)}`}
+                      </Td>
                       <Td>{position.isLiquidated ? `💀` : `NO`}</Td>
                       <Td>{position.isOpen ? `✅` : `❌`}</Td>
                       <Td>{position?.openTimestamp}</Td>

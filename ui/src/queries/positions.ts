@@ -74,13 +74,13 @@ const body = (
     ${
       filterOptions.deactivateOpenedAt
         ? ''
-        : `openTimestamp_lt: "${filterOptions.openedAt}",`
+        : `openTimestamp_gt: "${filterOptions.openedAt}",`
     }
     ${
       filterOptions.deactivateClosedAt
         ? ''
         : !filterOptions.deactivateOpen && !filterOptions.open
-        ? `closeTimestamp_gt: "${filterOptions.closedAt}"`
+        ? `closeTimestamp_lt: "${filterOptions.closedAt}"`
         : ''
     }
   }) {
@@ -196,6 +196,9 @@ function useGetPositions({
         console.error(error);
         return { futuresPositions: [], futuresStats: [] };
       }
+    },
+    {
+      enabled: false,
     }
   );
 }

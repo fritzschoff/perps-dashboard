@@ -39,6 +39,8 @@ function App() {
         See all actions that happened
       </Link>
       <Text>- OR -</Text>
+      <Heading size="lg">Overview</Heading>
+      <Divider m="2" />
       <PositionsTable />
     </Flex>
   );
