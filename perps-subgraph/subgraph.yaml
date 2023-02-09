@@ -33,25 +33,3 @@ dataSources:
         # - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
         #   handler: 'handleDelayedOrderRemoved'
       file: ./src/futures.ts
-  - kind: ethereum
-    name: FuturesMarketManager
-    network: optimism
-    source:
-      address: '0xdb89f3fc45A707Dd49781495f77f8ae69bF5cA6e'
-      abi: FuturesMarketManager
-      startBlock: 6175244
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - FuturesMarket
-      abis:
-        - name: FuturesMarketManager
-          file: ./abis/FuturesMarketManager.json
-      eventHandlers:
-        - event: 'MarketAdded(address,indexed bytes32,indexed bytes32)'
-          handler: 'handleV2MarketAdded'
-        - event: 'MarketRemoved(address,indexed bytes32,indexed bytes32)'
-          handler: 'handleV2MarketRemoved'
-      file: ./src/futures.ts

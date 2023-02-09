@@ -3,7 +3,6 @@ import {
   PositionLiquidated as PositionLiquidatedEvent,
   PositionModified as PositionModifiedEvent,
 } from '../generated/PerpsV2MarketProxyable/PerpsV2MarketProxyable';
-import { MarketAdded as MarketAddedEvent } from '../generated/FuturesMarketManager/FuturesMarketManager';
 import {
   PositionLiquidated,
   Trader,
@@ -11,13 +10,6 @@ import {
   FuturesPosition,
   FuturesMarket,
 } from '../generated/schema';
-
-export function handleV2MarketAdded(event: MarketAddedEvent): void {
-  let marketEntity = new FuturesMarket(event.params.market.toHex());
-  marketEntity.asset = event.params.asset;
-  marketEntity.marketKey = event.params.marketKey;
-  marketEntity.save();
-}
 
 export function handlePositionLiquidated(event: PositionLiquidatedEvent): void {
   const positionLiquidatedEntity = new PositionLiquidated(

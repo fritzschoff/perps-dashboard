@@ -81,7 +81,9 @@ export const PositionsTable: FC = () => {
 
   const triggerRefetch = () => {
     setRefetchLoading(true);
-    refetch().then(() => setRefetchLoading(false));
+    setTimeout(() => {
+      refetch().then(() => setRefetchLoading(false));
+    }, 0);
   };
 
   return (
@@ -328,10 +330,8 @@ export const PositionsTable: FC = () => {
                       setSortConfig((state) => ['isOpen', !state[1]]);
                       triggerRefetch();
                     }}
-                    border={sortConfig[0] === 'isLiquidated' ? '1px solid' : ''}
-                    borderColor={
-                      sortConfig[0] === 'isLiquidated' ? 'cyan.500' : ''
-                    }
+                    border={sortConfig[0] === 'isOpen' ? '1px solid' : ''}
+                    borderColor={sortConfig[0] === 'isOpen' ? 'cyan.500' : ''}
                   >
                     Open
                     {sortConfig[0] === 'isOpen' &&
