@@ -1,8 +1,11 @@
 import { FC, useState } from 'react';
 import {
+  Box,
   Button,
   Checkbox,
+  Divider,
   Flex,
+  Heading,
   Input,
   Radio,
   RadioGroup,
@@ -21,8 +24,8 @@ import {
 } from '@chakra-ui/react';
 import useGetPositions from '../queries/positions';
 import { useForm } from 'react-hook-form';
-import { MARKETS } from '../utils/constants';
 import { useParams } from 'react-router-dom';
+import { useGetMarkets } from '../queries/markets';
 
 export type SortConfig = [
   (
@@ -42,6 +45,7 @@ export type SortConfig = [
 export const PositionsTable: FC = () => {
   const params = useParams();
   const toast = useToast();
+  const { data } = useGetMarkets();
   const [isRefetchLoading, setRefetchLoading] = useState(false);
   const [sortConfig, setSortConfig] = useState<SortConfig>(['account', true]);
   const { register, getValues, setValue, watch } = useForm({
@@ -89,11 +93,15 @@ export const PositionsTable: FC = () => {
             gap="2"
             justifyContent="space-between"
           >
-            {MARKETS.map((market, index) => (
-              <Radio value={market} key={market.concat(index.toString())}>
-                {market}
-              </Radio>
-            ))}
+            {data &&
+              data.map((market, index) => (
+                <Radio
+                  value={market.asset}
+                  key={market.asset.concat(index.toString())}
+                >
+                  {market.asset}
+                </Radio>
+              ))}
             <Radio value="all">All</Radio>
           </Flex>
         </RadioGroup>
@@ -156,31 +164,43 @@ export const PositionsTable: FC = () => {
         <Spinner color="cyan.500" />
       ) : (
         <>
-          {params?.walletAddress &&
-            positions?.futuresStats.map((stats) => {
-              return (
-                <Flex flexDir="column" key="only-one">
-                  <Text>
-                    Fees Paid: ${(Number(stats.feesPaid) / 1e18).toFixed(2)}
-                  </Text>
-                  <Text>Liquidations: {stats.liquidations}</Text>
-                  <Text>PNL: ${(Number(stats.pnl) / 1e18).toFixed(2)}</Text>
-                  <Text>
-                    PNL Minus Fees: $
-                    {(Number(stats.pnlWithFeesPaid) / 1e18).toFixed(2)}
-                  </Text>
-                  <Text>Total trades: {stats.totalTrades}</Text>
-                  <Text>
-                    Total volume: $
-                    {(Number(stats.totalVolume) / 1e18).toFixed(2)}
-                  </Text>
-                  <Text>
-                    Cross Margin Volume: $
-                    {(Number(stats.crossMarginVolume) / 1e18).toFixed(2)}
-                  </Text>
-                </Flex>
-              );
-            })}
+          <Divider m="2" />
+          <Heading>Stats from Trader</Heading>
+          <Box
+            borderWidth="1px"
+            borderStyle="solid"
+            borderColor="cyan.500"
+            boxShadow="2xl"
+            borderRadius="base"
+            p="2"
+            m="2"
+          >
+            {params?.walletAddress &&
+              positions?.futuresStats.map((stats) => {
+                return (
+                  <Flex flexDir="column" key="only-one">
+                    <Text>
+                      Fees Paid: ${(Number(stats.feesPaid) / 1e18).toFixed(2)}
+                    </Text>
+                    <Text>Liquidations: {stats.liquidations}</Text>
+                    <Text>PNL: ${(Number(stats.pnl) / 1e18).toFixed(2)}</Text>
+                    <Text>
+                      PNL Minus Fees: $
+                      {(Number(stats.pnlWithFeesPaid) / 1e18).toFixed(2)}
+                    </Text>
+                    <Text>Total trades: {stats.totalTrades}</Text>
+                    <Text>
+                      Total volume: $
+                      {(Number(stats.totalVolume) / 1e18).toFixed(2)}
+                    </Text>
+                    <Text>
+                      Cross Margin Volume: $
+                      {(Number(stats.crossMarginVolume) / 1e18).toFixed(2)}
+                    </Text>
+                  </Flex>
+                );
+              })}
+          </Box>
           <TableContainer w="100%">
             <Table>
               <Thead>

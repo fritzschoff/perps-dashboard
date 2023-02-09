@@ -38,6 +38,7 @@ function App() {
       <Link to="/actions" style={{ textDecorationLine: 'underline' }}>
         See all actions that happened
       </Link>
+      <Text>- OR -</Text>
       <PositionsTable />
     </Flex>
   );
