@@ -1,0 +1,56 @@
+type PositionLiquidated @entity {
+  id: ID!
+  account: Bytes!
+  liquidator: Bytes!
+  size: BigDecimal!
+  price: BigDecimal!
+  fee: BigDecimal!
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+type Trader @entity {
+  id: ID!
+  totalLiquidations: BigInt!
+  totalMarginLiquidated: BigDecimal!
+  tradeCount: BigInt!
+  feesPaidToSynthetix: BigDecimal!
+}
+
+type Synthetix @entity {
+  id: ID!
+  feesGeneratedByLiquidations: BigDecimal!
+}
+
+type FuturesPosition @entity {
+  id: ID!
+  lastTxHash: Bytes!
+  openTimestamp: BigInt!
+  closeTimestamp: BigInt
+  timestamp: BigInt!
+  block: BigInt!
+  market: Bytes!
+  asset: Bytes!
+  marketKey: Bytes!
+  isOpen: Boolean!
+  isLiquidated: Boolean!
+  totalVolume: BigInt!
+  size: BigInt!
+  initialMargin: BigInt!
+  margin: BigInt!
+  pnl: BigInt!
+  feesPaid: BigInt!
+  pnlWithFeesPaid: BigInt!
+  netTransfers: BigInt!
+  totalDeposits: BigInt!
+  entryPrice: BigInt!
+  avgEntryPrice: BigInt!
+  lastPrice: BigInt!
+  exitPrice: BigInt
+}
+
+type FuturesMarket @entity {
+  id: ID!
+  asset: Bytes!
+  marketKey: Bytes!
+}
