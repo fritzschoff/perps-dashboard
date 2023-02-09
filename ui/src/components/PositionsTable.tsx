@@ -26,6 +26,7 @@ import useGetPositions from '../queries/positions';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import { useGetMarkets } from '../queries/markets';
+import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 
 export type SortConfig = [
   (
@@ -47,7 +48,10 @@ export const PositionsTable: FC = () => {
   const toast = useToast();
   const { data } = useGetMarkets();
   const [isRefetchLoading, setRefetchLoading] = useState(false);
-  const [sortConfig, setSortConfig] = useState<SortConfig>(['account', true]);
+  const [sortConfig, setSortConfig] = useState<SortConfig>([
+    'openTimestamp',
+    false,
+  ]);
   const { register, getValues, setValue, watch } = useForm({
     defaultValues: {
       asset: 'all',
@@ -55,6 +59,8 @@ export const PositionsTable: FC = () => {
       deactivateLiquidated: true,
       open: false,
       deactivateOpen: true,
+      deactivateOpenedAt: false,
+      deactivateClosedAt: false,
       openedAt: monthAgo(),
       closedAt: new Date(),
     },
@@ -152,9 +158,33 @@ export const PositionsTable: FC = () => {
         </Stack>
         <Stack gap="2">
           <Text>Opened At (default: one month ago)</Text>
-          <Input type="date" {...register('openedAt', { valueAsDate: true })} />
+          <Input
+            type="date"
+            {...register('openedAt', { valueAsDate: true })}
+            disabled={watch('deactivateOpenedAt')}
+          />
+          <Checkbox
+            onChange={() => {
+              setValue('deactivateOpenedAt', !getValues('deactivateOpenedAt'));
+            }}
+            isChecked={watch('deactivateOpenedAt')}
+          >
+            Deactivate opened at
+          </Checkbox>
           <Text>Closed At (default: now)</Text>
-          <Input type="date" {...register('closedAt', { valueAsDate: true })} />
+          <Input
+            type="date"
+            {...register('closedAt', { valueAsDate: true })}
+            disabled={watch('deactivateClosedAt')}
+          />
+          <Checkbox
+            onChange={() => {
+              setValue('deactivateClosedAt', !getValues('deactivateClosedAt'));
+            }}
+            isChecked={watch('deactivateClosedAt')}
+          >
+            Deactivate open option
+          </Checkbox>
         </Stack>
       </Flex>
       <Button onClick={() => triggerRefetch()} disabled={isLoading}>
@@ -164,43 +194,46 @@ export const PositionsTable: FC = () => {
         <Spinner color="cyan.500" />
       ) : (
         <>
-          <Divider m="2" />
-          <Heading>Stats from Trader</Heading>
-          <Box
-            borderWidth="1px"
-            borderStyle="solid"
-            borderColor="cyan.500"
-            boxShadow="2xl"
-            borderRadius="base"
-            p="2"
-            m="2"
-          >
-            {params?.walletAddress &&
-              positions?.futuresStats.map((stats) => {
-                return (
-                  <Flex flexDir="column" key="only-one">
-                    <Text>
-                      Fees Paid: ${(Number(stats.feesPaid) / 1e18).toFixed(2)}
-                    </Text>
-                    <Text>Liquidations: {stats.liquidations}</Text>
-                    <Text>PNL: ${(Number(stats.pnl) / 1e18).toFixed(2)}</Text>
-                    <Text>
-                      PNL Minus Fees: $
-                      {(Number(stats.pnlWithFeesPaid) / 1e18).toFixed(2)}
-                    </Text>
-                    <Text>Total trades: {stats.totalTrades}</Text>
-                    <Text>
-                      Total volume: $
-                      {(Number(stats.totalVolume) / 1e18).toFixed(2)}
-                    </Text>
-                    <Text>
-                      Cross Margin Volume: $
-                      {(Number(stats.crossMarginVolume) / 1e18).toFixed(2)}
-                    </Text>
-                  </Flex>
-                );
-              })}
-          </Box>
+          {params?.walletAddress && (
+            <>
+              <Divider m="2" />
+              <Heading>Stats from Trader</Heading>
+              <Box
+                borderWidth="1px"
+                borderStyle="solid"
+                borderColor="cyan.500"
+                boxShadow="2xl"
+                borderRadius="base"
+                p="2"
+                m="2"
+              >
+                {positions?.futuresStats.map((stats) => {
+                  return (
+                    <Flex flexDir="column" key="only-one">
+                      <Text>
+                        Fees Paid: ${(Number(stats.feesPaid) / 1e18).toFixed(2)}
+                      </Text>
+                      <Text>Liquidations: {stats.liquidations}</Text>
+                      <Text>PNL: ${(Number(stats.pnl) / 1e18).toFixed(2)}</Text>
+                      <Text>
+                        PNL Minus Fees: $
+                        {(Number(stats.pnlWithFeesPaid) / 1e18).toFixed(2)}
+                      </Text>
+                      <Text>Total trades: {stats.totalTrades}</Text>
+                      <Text>
+                        Total volume: $
+                        {(Number(stats.totalVolume) / 1e18).toFixed(2)}
+                      </Text>
+                      <Text>
+                        Cross Margin Volume: $
+                        {(Number(stats.crossMarginVolume) / 1e18).toFixed(2)}
+                      </Text>
+                    </Flex>
+                  );
+                })}
+              </Box>
+            </>
+          )}
           <TableContainer w="100%">
             <Table>
               <Thead>
@@ -211,8 +244,12 @@ export const PositionsTable: FC = () => {
                       setSortConfig((state) => ['account', !state[1]]);
                       triggerRefetch();
                     }}
+                    border={sortConfig[0] === 'account' ? '1px solid' : ''}
+                    borderColor={sortConfig[0] === 'account' ? 'cyan.500' : ''}
                   >
                     Address
+                    {sortConfig[0] === 'account' &&
+                      (sortConfig[1] ? <ChevronDownIcon /> : <ChevronUpIcon />)}
                   </Th>
                   <Th
                     cursor="pointer"
@@ -220,8 +257,12 @@ export const PositionsTable: FC = () => {
                       setSortConfig((state) => ['asset', !state[1]]);
                       triggerRefetch();
                     }}
+                    border={sortConfig[0] === 'asset' ? '1px solid' : ''}
+                    borderColor={sortConfig[0] === 'asset' ? 'cyan.500' : ''}
                   >
                     Asset
+                    {sortConfig[0] === 'asset' &&
+                      (sortConfig[1] ? <ChevronDownIcon /> : <ChevronUpIcon />)}
                   </Th>
                   <Th
                     cursor="pointer"
@@ -229,8 +270,12 @@ export const PositionsTable: FC = () => {
                       setSortConfig((state) => ['market', !state[1]]);
                       triggerRefetch();
                     }}
+                    border={sortConfig[0] === 'market' ? '1px solid' : ''}
+                    borderColor={sortConfig[0] === 'market' ? 'cyan.500' : ''}
                   >
                     Market
+                    {sortConfig[0] === 'market' &&
+                      (sortConfig[1] ? <ChevronDownIcon /> : <ChevronUpIcon />)}
                   </Th>
                   <Th
                     cursor="pointer"
@@ -238,8 +283,14 @@ export const PositionsTable: FC = () => {
                       setSortConfig((state) => ['entryPrice', !state[1]]);
                       triggerRefetch();
                     }}
+                    border={sortConfig[0] === 'entryPrice' ? '1px solid' : ''}
+                    borderColor={
+                      sortConfig[0] === 'entryPrice' ? 'cyan.500' : ''
+                    }
                   >
                     Entry Price
+                    {sortConfig[0] === 'entryPrice' &&
+                      (sortConfig[1] ? <ChevronDownIcon /> : <ChevronUpIcon />)}
                   </Th>
                   <Th
                     cursor="pointer"
@@ -247,8 +298,14 @@ export const PositionsTable: FC = () => {
                       setSortConfig((state) => ['exitPrice', !state[1]]);
                       triggerRefetch();
                     }}
+                    border={sortConfig[0] === 'exitPrice' ? '1px solid' : ''}
+                    borderColor={
+                      sortConfig[0] === 'exitPrice' ? 'cyan.500' : ''
+                    }
                   >
                     Exit Price
+                    {sortConfig[0] === 'exitPrice' &&
+                      (sortConfig[1] ? <ChevronDownIcon /> : <ChevronUpIcon />)}
                   </Th>
                   <Th
                     cursor="pointer"
@@ -256,8 +313,14 @@ export const PositionsTable: FC = () => {
                       setSortConfig((state) => ['isLiquidated', !state[1]]);
                       triggerRefetch();
                     }}
+                    border={sortConfig[0] === 'isLiquidated' ? '1px solid' : ''}
+                    borderColor={
+                      sortConfig[0] === 'isLiquidated' ? 'cyan.500' : ''
+                    }
                   >
                     Liquidated
+                    {sortConfig[0] === 'isLiquidated' &&
+                      (sortConfig[1] ? <ChevronDownIcon /> : <ChevronUpIcon />)}
                   </Th>
                   <Th
                     cursor="pointer"
@@ -265,8 +328,14 @@ export const PositionsTable: FC = () => {
                       setSortConfig((state) => ['isOpen', !state[1]]);
                       triggerRefetch();
                     }}
+                    border={sortConfig[0] === 'isLiquidated' ? '1px solid' : ''}
+                    borderColor={
+                      sortConfig[0] === 'isLiquidated' ? 'cyan.500' : ''
+                    }
                   >
                     Open
+                    {sortConfig[0] === 'isOpen' &&
+                      (sortConfig[1] ? <ChevronDownIcon /> : <ChevronUpIcon />)}
                   </Th>
                   <Th
                     cursor="pointer"
@@ -274,8 +343,16 @@ export const PositionsTable: FC = () => {
                       setSortConfig((state) => ['openTimestamp', !state[1]]);
                       triggerRefetch();
                     }}
+                    border={
+                      sortConfig[0] === 'openTimestamp' ? '1px solid' : ''
+                    }
+                    borderColor={
+                      sortConfig[0] === 'openTimestamp' ? 'cyan.500' : ''
+                    }
                   >
                     Opened at
+                    {sortConfig[0] === 'openTimestamp' &&
+                      (sortConfig[1] ? <ChevronDownIcon /> : <ChevronUpIcon />)}
                   </Th>
                   <Th
                     cursor="pointer"
@@ -283,8 +360,16 @@ export const PositionsTable: FC = () => {
                       setSortConfig((state) => ['closeTimestamp', !state[1]]);
                       triggerRefetch();
                     }}
+                    border={
+                      sortConfig[0] === 'closeTimestamp' ? '1px solid' : ''
+                    }
+                    borderColor={
+                      sortConfig[0] === 'closeTimestamp' ? 'cyan.500' : ''
+                    }
                   >
                     Closed at
+                    {sortConfig[0] === 'closeTimestamp' &&
+                      (sortConfig[1] ? <ChevronDownIcon /> : <ChevronUpIcon />)}
                   </Th>
                 </Tr>
               </Thead>

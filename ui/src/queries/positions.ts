@@ -44,6 +44,8 @@ export interface FilterOptions {
   closedAt: number;
   deactivateLiquidated: boolean;
   deactivateOpen: boolean;
+  deactivateOpenedAt: boolean;
+  deactivateClosedAt: boolean;
 }
 
 const body = (
@@ -55,7 +57,7 @@ const body = (
   return `query futurePositions {
     futuresPositions(skip: ${skip}, first: 1000,
       orderBy: "${sortConfig[0]}", orderDirection: "${
-    sortConfig[1] ? 'desc' : 'asc'
+    !sortConfig[1] ? 'desc' : 'asc'
   }", where: {
     ${address ? `account: "${address.toLowerCase()}",` : ''}
     ${
@@ -69,9 +71,15 @@ const body = (
         : `isLiquidated: ${filterOptions.liquidated},`
     }
     ${filterOptions.deactivateOpen ? '' : `isOpen: ${filterOptions.open},`}
-    openTimestamp_lt: "${filterOptions.openedAt}",
     ${
-      !filterOptions.deactivateOpen && !filterOptions.open
+      filterOptions.deactivateOpenedAt
+        ? ''
+        : `openTimestamp_lt: "${filterOptions.openedAt}",`
+    }
+    ${
+      filterOptions.deactivateClosedAt
+        ? ''
+        : !filterOptions.deactivateOpen && !filterOptions.open
         ? `closeTimestamp_gt: "${filterOptions.closedAt}"`
         : ''
     }
@@ -148,45 +156,48 @@ function useGetPositions({
   filterOptions: FilterOptions;
   sortConfig: SortConfig;
 }) {
-  return useQuery(['positions', address?.toString()], async () => {
-    try {
-      const data = await refetchMore({
-        address,
-        skip: 0,
-        filterOptions,
-        sortConfig,
-      });
+  return useQuery(
+    ['positions', address?.toString(), filterOptions, sortConfig.toString()],
+    async () => {
+      try {
+        const data = await refetchMore({
+          address,
+          skip: 0,
+          filterOptions,
+          sortConfig,
+        });
 
-      return {
-        futuresStats: data?.futuresStats,
-        futuresPositions: data.futuresPositions
-          .map((position) => ({
-            ...position,
-            asset: utils.parseBytes32String(position.asset),
-            marketKey: utils.parseBytes32String(position.marketKey),
-            openTimestamp: toDateTime(
-              Number(position.openTimestamp)
-            ).toLocaleDateString(),
-            closeTimestamp:
-              position.closeTimestamp === null
-                ? '-'
-                : toDateTime(
-                    Number(position.closeTimestamp)
-                  ).toLocaleDateString(),
-          }))
-          .filter((position) => {
-            if (address) {
-              if (address === position.account) return true;
-              return false;
-            }
-            return true;
-          }) as FuturePosition[],
-      };
-    } catch (error) {
-      console.error(error);
-      return { futuresPositions: [], futuresStats: [] };
+        return {
+          futuresStats: data?.futuresStats,
+          futuresPositions: data.futuresPositions
+            .map((position) => ({
+              ...position,
+              asset: utils.parseBytes32String(position.asset),
+              marketKey: utils.parseBytes32String(position.marketKey),
+              openTimestamp: toDateTime(
+                Number(position.openTimestamp)
+              ).toLocaleDateString(),
+              closeTimestamp:
+                position.closeTimestamp === null
+                  ? '-'
+                  : toDateTime(
+                      Number(position.closeTimestamp)
+                    ).toLocaleDateString(),
+            }))
+            .filter((position) => {
+              if (address) {
+                if (address === position.account) return true;
+                return false;
+              }
+              return true;
+            }) as FuturePosition[],
+        };
+      } catch (error) {
+        console.error(error);
+        return { futuresPositions: [], futuresStats: [] };
+      }
     }
-  });
+  );
 }
 
 export default useGetPositions;

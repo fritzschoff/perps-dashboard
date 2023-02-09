@@ -1,5 +1,5 @@
 import { ArrowBackIcon } from '@chakra-ui/icons';
-import { Flex, Heading } from '@chakra-ui/react';
+import { Divider, Flex, Heading } from '@chakra-ui/react';
 import { FC } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { PositionsTable } from './components/PositionsTable';
@@ -15,6 +15,7 @@ export const Wallet: FC = () => {
         </Flex>
       </Link>
       <Heading size="sm">{params?.walletAddress}</Heading>
+      <Divider m="4" />
       <PositionsTable />
     </Flex>
   );
