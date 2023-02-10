@@ -207,13 +207,63 @@ export class Synthetix extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get feesGeneratedByLiquidations(): BigDecimal {
-    let value = this.get("feesGeneratedByLiquidations");
+  get feesByLiquidations(): BigDecimal {
+    let value = this.get("feesByLiquidations");
     return value!.toBigDecimal();
   }
 
-  set feesGeneratedByLiquidations(value: BigDecimal) {
-    this.set("feesGeneratedByLiquidations", Value.fromBigDecimal(value));
+  set feesByLiquidations(value: BigDecimal) {
+    this.set("feesByLiquidations", Value.fromBigDecimal(value));
+  }
+
+  get feesByPositionModifications(): BigDecimal {
+    let value = this.get("feesByPositionModifications");
+    return value!.toBigDecimal();
+  }
+
+  set feesByPositionModifications(value: BigDecimal) {
+    this.set("feesByPositionModifications", Value.fromBigDecimal(value));
+  }
+}
+
+export class Partner extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Partner entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Partner must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Partner", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Partner | null {
+    return changetype<Partner | null>(store.get("Partner", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get tradeCount(): BigInt {
+    let value = this.get("tradeCount");
+    return value!.toBigInt();
+  }
+
+  set tradeCount(value: BigInt) {
+    this.set("tradeCount", Value.fromBigInt(value));
   }
 }
 
@@ -248,15 +298,6 @@ export class FuturesPosition extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get lastTxHash(): Bytes {
-    let value = this.get("lastTxHash");
-    return value!.toBytes();
-  }
-
-  set lastTxHash(value: Bytes) {
-    this.set("lastTxHash", Value.fromBytes(value));
-  }
-
   get openTimestamp(): BigInt {
     let value = this.get("openTimestamp");
     return value!.toBigInt();
@@ -283,15 +324,6 @@ export class FuturesPosition extends Entity {
     }
   }
 
-  get timestamp(): BigInt {
-    let value = this.get("timestamp");
-    return value!.toBigInt();
-  }
-
-  set timestamp(value: BigInt) {
-    this.set("timestamp", Value.fromBigInt(value));
-  }
-
   get block(): BigInt {
     let value = this.get("block");
     return value!.toBigInt();
@@ -301,31 +333,22 @@ export class FuturesPosition extends Entity {
     this.set("block", Value.fromBigInt(value));
   }
 
-  get market(): Bytes {
+  get market(): string {
     let value = this.get("market");
-    return value!.toBytes();
+    return value!.toString();
   }
 
-  set market(value: Bytes) {
-    this.set("market", Value.fromBytes(value));
+  set market(value: string) {
+    this.set("market", Value.fromString(value));
   }
 
-  get asset(): Bytes {
+  get asset(): string {
     let value = this.get("asset");
-    return value!.toBytes();
+    return value!.toString();
   }
 
-  set asset(value: Bytes) {
-    this.set("asset", Value.fromBytes(value));
-  }
-
-  get marketKey(): Bytes {
-    let value = this.get("marketKey");
-    return value!.toBytes();
-  }
-
-  set marketKey(value: Bytes) {
-    this.set("marketKey", Value.fromBytes(value));
+  set asset(value: string) {
+    this.set("asset", Value.fromString(value));
   }
 
   get isOpen(): boolean {
@@ -346,13 +369,13 @@ export class FuturesPosition extends Entity {
     this.set("isLiquidated", Value.fromBoolean(value));
   }
 
-  get totalVolume(): BigInt {
-    let value = this.get("totalVolume");
+  get trades(): BigInt {
+    let value = this.get("trades");
     return value!.toBigInt();
   }
 
-  set totalVolume(value: BigInt) {
-    this.set("totalVolume", Value.fromBigInt(value));
+  set trades(value: BigInt) {
+    this.set("trades", Value.fromBigInt(value));
   }
 
   get size(): BigInt {
@@ -391,42 +414,6 @@ export class FuturesPosition extends Entity {
     this.set("pnl", Value.fromBigInt(value));
   }
 
-  get feesPaid(): BigInt {
-    let value = this.get("feesPaid");
-    return value!.toBigInt();
-  }
-
-  set feesPaid(value: BigInt) {
-    this.set("feesPaid", Value.fromBigInt(value));
-  }
-
-  get netFunding(): BigInt {
-    let value = this.get("netFunding");
-    return value!.toBigInt();
-  }
-
-  set netFunding(value: BigInt) {
-    this.set("netFunding", Value.fromBigInt(value));
-  }
-
-  get pnlWithFeesPaid(): BigInt {
-    let value = this.get("pnlWithFeesPaid");
-    return value!.toBigInt();
-  }
-
-  set pnlWithFeesPaid(value: BigInt) {
-    this.set("pnlWithFeesPaid", Value.fromBigInt(value));
-  }
-
-  get netTransfers(): BigInt {
-    let value = this.get("netTransfers");
-    return value!.toBigInt();
-  }
-
-  set netTransfers(value: BigInt) {
-    this.set("netTransfers", Value.fromBigInt(value));
-  }
-
   get totalDeposits(): BigInt {
     let value = this.get("totalDeposits");
     return value!.toBigInt();
@@ -443,15 +430,6 @@ export class FuturesPosition extends Entity {
 
   set entryPrice(value: BigInt) {
     this.set("entryPrice", Value.fromBigInt(value));
-  }
-
-  get avgEntryPrice(): BigInt {
-    let value = this.get("avgEntryPrice");
-    return value!.toBigInt();
-  }
-
-  set avgEntryPrice(value: BigInt) {
-    this.set("avgEntryPrice", Value.fromBigInt(value));
   }
 
   get lastPrice(): BigInt {

@@ -19,32 +19,31 @@ type Trader @entity {
 
 type Synthetix @entity {
   id: ID!
-  feesGeneratedByLiquidations: BigDecimal!
+  feesByLiquidations: BigDecimal!
+  feesByPositionModifications: BigDecimal!
+}
+
+type Partner @entity {
+  id: ID!
+  tradeCount: BigInt!
 }
 
 type FuturesPosition @entity {
   id: ID!
-  lastTxHash: Bytes!
   openTimestamp: BigInt!
   closeTimestamp: BigInt
-  timestamp: BigInt!
   block: BigInt!
-  market: Bytes!
-  asset: Bytes!
-  marketKey: Bytes!
+  market: String!
+  asset: String!
   isOpen: Boolean!
   isLiquidated: Boolean!
-  totalVolume: BigInt!
+  trades: BigInt!
   size: BigInt!
   initialMargin: BigInt!
   margin: BigInt!
   pnl: BigInt!
-  feesPaid: BigInt!
-  pnlWithFeesPaid: BigInt!
-  netTransfers: BigInt!
   totalDeposits: BigInt!
   entryPrice: BigInt!
-  avgEntryPrice: BigInt!
   lastPrice: BigInt!
   exitPrice: BigInt
 }
