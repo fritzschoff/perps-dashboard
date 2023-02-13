@@ -14,6 +14,7 @@ type Trader @entity {
   totalLiquidations: BigInt!
   totalMarginLiquidated: BigDecimal!
   feesPaidToSynthetix: BigDecimal!
+  totalVolume: BigDecimal!
   pnl: BigInt!
   trades: [FuturesTrade!]
 }
@@ -45,7 +46,6 @@ enum FuturesTradeType {
 
 enum FuturesOrderStatus {
   Pending
-  Open
   Filled
   Cancelled
 }

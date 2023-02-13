@@ -46,7 +46,6 @@ enum FuturesTradeType {
 
 enum FuturesOrderStatus {
   Pending
-  Open
   Filled
   Cancelled
 }
