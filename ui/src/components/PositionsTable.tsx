@@ -391,7 +391,7 @@ export const PositionsTable: FC = () => {
                           )}
                       </Td>
                       <Td>{position.asset}</Td>
-                      <Td>{position.marketKey}</Td>
+                      <Td>{position.market}</Td>
                       <Td>
                         ${(Number(position.entryPrice) / 1e18).toFixed(2)}
                       </Td>

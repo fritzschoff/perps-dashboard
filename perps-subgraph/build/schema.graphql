@@ -23,14 +23,31 @@ type FuturesTrade @entity {
   timestamp: BigInt!
   account: Bytes!
   margin: BigInt!
+  positionId: String!
   size: BigInt!
-
   market: Bytes!
   price: BigInt!
   positionSize: BigInt!
   positionClosed: Boolean!
   pnl: BigInt!
   feesPaidToSynthetix: BigInt!
+  type: FuturesTradeType!
+}
+
+enum FuturesTradeType {
+  PositionOpened
+  PositionClosed
+  PositionModified
+  DelayedOrderRemoved
+  DelayedOrderSubmitted
+  DelayedOffchainSubmitted
+}
+
+enum FuturesOrderStatus {
+  Pending
+  Open
+  Filled
+  Cancelled
 }
 
 type Synthetix @entity {
@@ -55,6 +72,7 @@ type FuturesPosition @entity {
   isOpen: Boolean!
   isLiquidated: Boolean!
   trades: BigInt!
+  feesPaidToSynthetix: BigInt!
   size: BigInt!
   initialMargin: BigInt!
   margin: BigInt!
@@ -63,4 +81,19 @@ type FuturesPosition @entity {
   entryPrice: BigInt!
   lastPrice: BigInt!
   exitPrice: BigInt
+}
+
+type FuturesOrder @entity {
+  id: ID!
+  size: BigInt!
+  market: Bytes!
+  account: Bytes!
+  orderId: BigInt!
+  targetRoundId: BigInt!
+  targetPrice: BigInt!
+  marginDelta: BigInt!
+  timestamp: BigInt!
+  orderType: FuturesTradeType!
+  status: FuturesOrderStatus!
+  keeper: Bytes!
 }

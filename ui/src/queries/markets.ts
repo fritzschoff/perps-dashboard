@@ -5,7 +5,7 @@ import { perpsV2Contract } from '../utils/contracts';
 
 interface FutureMarketsGraphResponse {
   data: {
-    futuresMarkets: { marketKey: string; asset: string }[];
+    futuresMarkets: { marketKey: string; asset: string; id: string }[];
   };
 }
 
@@ -18,6 +18,7 @@ export const useGetMarkets = () =>
                     futuresMarkets {
                         marketKey 
                         asset
+                        id
                     }
                 }`,
       }),
@@ -25,6 +26,7 @@ export const useGetMarkets = () =>
     const { data }: FutureMarketsGraphResponse = await response.json();
     const dataWithMaxLeverage = await Promise.all(
       data.futuresMarkets.map(async (market) => ({
+        ...market,
         marketKey: utils.parseBytes32String(market.marketKey),
         asset: utils.parseBytes32String(market.asset),
         maxLeverage: await perpsV2Contract.maxLeverage(market.marketKey),

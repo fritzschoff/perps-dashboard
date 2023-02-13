@@ -1,7 +1,8 @@
 import { useQuery } from 'react-query';
-import { PerpProxies, PERPS_V2_DASHBOARD_GRAPH_URL } from '../utils/constants';
+import { PERPS_V2_DASHBOARD_GRAPH_URL } from '../utils/constants';
 import { utils } from 'ethers';
 import { SortConfig } from '../components/PositionsTable';
+import { useGetMarkets } from './markets';
 
 interface GraphResponse {
   data: {
@@ -14,6 +15,7 @@ export interface FuturePosition {
   account: string;
   id: string;
   isLiquidated: boolean;
+  asset: string;
   market: string;
   isOpen: boolean;
   openTimestamp: string;
@@ -169,6 +171,7 @@ function useGetPositions({
   filterOptions: FilterOptions;
   sortConfig: SortConfig;
 }) {
+  const markets = useGetMarkets();
   return useQuery(
     ['positions', address?.toString(), filterOptions, sortConfig.toString()],
     async () => {
@@ -179,24 +182,19 @@ function useGetPositions({
           filterOptions,
           sortConfig,
         });
-        console.log(data);
+
         return {
           futuresStats: data?.traders,
           futuresPositions: data?.futuresPositions
             .map((position) => ({
               ...position,
               asset:
-                PerpProxies.find(
-                  (proxy) =>
-                    proxy.getAddress().toLowerCase() ===
-                    position.market.toLowerCase()
-                )?.getAsset() || 'not found',
-              market:
-                PerpProxies.find(
-                  (proxy) =>
-                    proxy.getMarket().toLowerCase() ===
-                    position.market.toLowerCase()
-                )?.getMarket() || 'not found',
+                markets.data?.find(
+                  (d) => d.id.toLowerCase() === position.market.toLowerCase()
+                )?.asset || 'not found',
+              market: markets.data?.find(
+                (d) => d.id.toLowerCase() === position.market.toLowerCase()
+              )?.marketKey,
               openTimestamp: toDateTime(
                 Number(position.openTimestamp)
               ).toLocaleDateString(),

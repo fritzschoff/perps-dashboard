@@ -23,6 +23,7 @@ type FuturesTrade @entity {
   timestamp: BigInt!
   account: Bytes!
   margin: BigInt!
+  positionId: String!
   size: BigInt!
   market: Bytes!
   price: BigInt!
@@ -39,6 +40,7 @@ enum FuturesTradeType {
   PositionModified
   DelayedOrderRemoved
   DelayedOrderSubmitted
+  DelayedOffchainSubmitted
 }
 
 enum FuturesOrderStatus {
@@ -70,6 +72,7 @@ type FuturesPosition @entity {
   isOpen: Boolean!
   isLiquidated: Boolean!
   trades: BigInt!
+  feesPaidToSynthetix: BigInt!
   size: BigInt!
   initialMargin: BigInt!
   margin: BigInt!

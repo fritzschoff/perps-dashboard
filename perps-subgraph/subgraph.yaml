@@ -22,8 +22,6 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: ./abis/PerpsV2MarketProxyable.json
       eventHandlers:
-        # - event: 'MarginTransferred(indexed address,int256)'
-        #   handler: 'handleMarginTransferred'
         - event: 'PositionModified(indexed uint256,indexed address,uint256,int256,int256,uint256,uint256,uint256)'
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
@@ -53,8 +51,6 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: ./abis/PerpsV2MarketProxyable.json
       eventHandlers:
-        # - event: 'MarginTransferred(indexed address,int256)'
-        #   handler: 'handleMarginTransferred'
         - event: 'PositionModified(indexed uint256,indexed address,uint256,int256,int256,uint256,uint256,uint256)'
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
@@ -84,8 +80,6 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: ./abis/PerpsV2MarketProxyable.json
       eventHandlers:
-        # - event: 'MarginTransferred(indexed address,int256)'
-        #   handler: 'handleMarginTransferred'
         - event: 'PositionModified(indexed uint256,indexed address,uint256,int256,int256,uint256,uint256,uint256)'
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
@@ -115,8 +109,6 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: ./abis/PerpsV2MarketProxyable.json
       eventHandlers:
-        # - event: 'MarginTransferred(indexed address,int256)'
-        #   handler: 'handleMarginTransferred'
         - event: 'PositionModified(indexed uint256,indexed address,uint256,int256,int256,uint256,uint256,uint256)'
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
@@ -146,8 +138,6 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: ./abis/PerpsV2MarketProxyable.json
       eventHandlers:
-        # - event: 'MarginTransferred(indexed address,int256)'
-        #   handler: 'handleMarginTransferred'
         - event: 'PositionModified(indexed uint256,indexed address,uint256,int256,int256,uint256,uint256,uint256)'
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
@@ -177,8 +167,6 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: ./abis/PerpsV2MarketProxyable.json
       eventHandlers:
-        # - event: 'MarginTransferred(indexed address,int256)'
-        #   handler: 'handleMarginTransferred'
         - event: 'PositionModified(indexed uint256,indexed address,uint256,int256,int256,uint256,uint256,uint256)'
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
@@ -208,8 +196,6 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: ./abis/PerpsV2MarketProxyable.json
       eventHandlers:
-        # - event: 'MarginTransferred(indexed address,int256)'
-        #   handler: 'handleMarginTransferred'
         - event: 'PositionModified(indexed uint256,indexed address,uint256,int256,int256,uint256,uint256,uint256)'
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
@@ -239,8 +225,6 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: ./abis/PerpsV2MarketProxyable.json
       eventHandlers:
-        # - event: 'MarginTransferred(indexed address,int256)'
-        #   handler: 'handleMarginTransferred'
         - event: 'PositionModified(indexed uint256,indexed address,uint256,int256,int256,uint256,uint256,uint256)'
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
@@ -270,8 +254,6 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: ./abis/PerpsV2MarketProxyable.json
       eventHandlers:
-        # - event: 'MarginTransferred(indexed address,int256)'
-        #   handler: 'handleMarginTransferred'
         - event: 'PositionModified(indexed uint256,indexed address,uint256,int256,int256,uint256,uint256,uint256)'
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
@@ -301,8 +283,6 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: ./abis/PerpsV2MarketProxyable.json
       eventHandlers:
-        # - event: 'MarginTransferred(indexed address,int256)'
-        #   handler: 'handleMarginTransferred'
         - event: 'PositionModified(indexed uint256,indexed address,uint256,int256,int256,uint256,uint256,uint256)'
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
@@ -332,8 +312,6 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: ./abis/PerpsV2MarketProxyable.json
       eventHandlers:
-        # - event: 'MarginTransferred(indexed address,int256)'
-        #   handler: 'handleMarginTransferred'
         - event: 'PositionModified(indexed uint256,indexed address,uint256,int256,int256,uint256,uint256,uint256)'
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
@@ -363,8 +341,6 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: ./abis/PerpsV2MarketProxyable.json
       eventHandlers:
-        # - event: 'MarginTransferred(indexed address,int256)'
-        #   handler: 'handleMarginTransferred'
         - event: 'PositionModified(indexed uint256,indexed address,uint256,int256,int256,uint256,uint256,uint256)'
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
@@ -394,8 +370,6 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: ./abis/PerpsV2MarketProxyable.json
       eventHandlers:
-        # - event: 'MarginTransferred(indexed address,int256)'
-        #   handler: 'handleMarginTransferred'
         - event: 'PositionModified(indexed uint256,indexed address,uint256,int256,int256,uint256,uint256,uint256)'
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
@@ -425,8 +399,6 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: ./abis/PerpsV2MarketProxyable.json
       eventHandlers:
-        # - event: 'MarginTransferred(indexed address,int256)'
-        #   handler: 'handleMarginTransferred'
         - event: 'PositionModified(indexed uint256,indexed address,uint256,int256,int256,uint256,uint256,uint256)'
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
@@ -456,8 +428,6 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: ./abis/PerpsV2MarketProxyable.json
       eventHandlers:
-        # - event: 'MarginTransferred(indexed address,int256)'
-        #   handler: 'handleMarginTransferred'
         - event: 'PositionModified(indexed uint256,indexed address,uint256,int256,int256,uint256,uint256,uint256)'
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
@@ -487,8 +457,6 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: ./abis/PerpsV2MarketProxyable.json
       eventHandlers:
-        # - event: 'MarginTransferred(indexed address,int256)'
-        #   handler: 'handleMarginTransferred'
         - event: 'PositionModified(indexed uint256,indexed address,uint256,int256,int256,uint256,uint256,uint256)'
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
@@ -518,8 +486,6 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: ./abis/PerpsV2MarketProxyable.json
       eventHandlers:
-        # - event: 'MarginTransferred(indexed address,int256)'
-        #   handler: 'handleMarginTransferred'
         - event: 'PositionModified(indexed uint256,indexed address,uint256,int256,int256,uint256,uint256,uint256)'
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
@@ -549,8 +515,6 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: ./abis/PerpsV2MarketProxyable.json
       eventHandlers:
-        # - event: 'MarginTransferred(indexed address,int256)'
-        #   handler: 'handleMarginTransferred'
         - event: 'PositionModified(indexed uint256,indexed address,uint256,int256,int256,uint256,uint256,uint256)'
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
@@ -580,8 +544,6 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: ./abis/PerpsV2MarketProxyable.json
       eventHandlers:
-        # - event: 'MarginTransferred(indexed address,int256)'
-        #   handler: 'handleMarginTransferred'
         - event: 'PositionModified(indexed uint256,indexed address,uint256,int256,int256,uint256,uint256,uint256)'
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
@@ -611,8 +573,6 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: ./abis/PerpsV2MarketProxyable.json
       eventHandlers:
-        # - event: 'MarginTransferred(indexed address,int256)'
-        #   handler: 'handleMarginTransferred'
         - event: 'PositionModified(indexed uint256,indexed address,uint256,int256,int256,uint256,uint256,uint256)'
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
@@ -642,8 +602,6 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: ./abis/PerpsV2MarketProxyable.json
       eventHandlers:
-        # - event: 'MarginTransferred(indexed address,int256)'
-        #   handler: 'handleMarginTransferred'
         - event: 'PositionModified(indexed uint256,indexed address,uint256,int256,int256,uint256,uint256,uint256)'
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
@@ -673,8 +631,6 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: ./abis/PerpsV2MarketProxyable.json
       eventHandlers:
-        # - event: 'MarginTransferred(indexed address,int256)'
-        #   handler: 'handleMarginTransferred'
         - event: 'PositionModified(indexed uint256,indexed address,uint256,int256,int256,uint256,uint256,uint256)'
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'

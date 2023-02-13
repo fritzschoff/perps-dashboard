@@ -251,6 +251,15 @@ export class FuturesTrade extends Entity {
     this.set("margin", Value.fromBigInt(value));
   }
 
+  get positionId(): string {
+    let value = this.get("positionId");
+    return value!.toString();
+  }
+
+  set positionId(value: string) {
+    this.set("positionId", Value.fromString(value));
+  }
+
   get size(): BigInt {
     let value = this.get("size");
     return value!.toBigInt();
@@ -535,6 +544,15 @@ export class FuturesPosition extends Entity {
     this.set("trades", Value.fromBigInt(value));
   }
 
+  get feesPaidToSynthetix(): BigInt {
+    let value = this.get("feesPaidToSynthetix");
+    return value!.toBigInt();
+  }
+
+  set feesPaidToSynthetix(value: BigInt) {
+    this.set("feesPaidToSynthetix", Value.fromBigInt(value));
+  }
+
   get size(): BigInt {
     let value = this.get("size");
     return value!.toBigInt();
@@ -665,15 +683,6 @@ export class FuturesOrder extends Entity {
     this.set("market", Value.fromBytes(value));
   }
 
-  get market(): Bytes {
-    let value = this.get("market");
-    return value!.toBytes();
-  }
-
-  set market(value: Bytes) {
-    this.set("market", Value.fromBytes(value));
-  }
-
   get account(): Bytes {
     let value = this.get("account");
     return value!.toBytes();
@@ -681,15 +690,6 @@ export class FuturesOrder extends Entity {
 
   set account(value: Bytes) {
     this.set("account", Value.fromBytes(value));
-  }
-
-  get abstractAccount(): Bytes {
-    let value = this.get("abstractAccount");
-    return value!.toBytes();
-  }
-
-  set abstractAccount(value: Bytes) {
-    this.set("abstractAccount", Value.fromBytes(value));
   }
 
   get orderId(): BigInt {
