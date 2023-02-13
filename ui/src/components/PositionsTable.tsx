@@ -39,6 +39,7 @@ export type SortConfig = [
     | 'isOpen'
     | 'openTimestamp'
     | 'closeTimestamp'
+    | 'long'
   ),
   boolean
 ];
@@ -85,6 +86,7 @@ export const PositionsTable: FC = () => {
       refetch().then(() => setRefetchLoading(false));
     }, 0);
   };
+
   return (
     <>
       <Flex py="2" gap="2" justifyContent="space-around" w="100%">
@@ -301,6 +303,20 @@ export const PositionsTable: FC = () => {
                     {sortConfig[0] === 'exitPrice' &&
                       (sortConfig[1] ? <ChevronDownIcon /> : <ChevronUpIcon />)}
                   </Th>
+                  <Th>Leverage</Th>
+                  <Th
+                    cursor="pointer"
+                    onClick={() => {
+                      setSortConfig((state) => ['long', !state[1]]);
+                      triggerRefetch();
+                    }}
+                    border={sortConfig[0] === 'long' ? '1px solid' : ''}
+                    borderColor={sortConfig[0] === 'long' ? 'cyan.500' : ''}
+                  >
+                    Long
+                    {sortConfig[0] === 'long' &&
+                      (sortConfig[1] ? <ChevronDownIcon /> : <ChevronUpIcon />)}
+                  </Th>
                   <Th
                     cursor="pointer"
                     onClick={() => {
@@ -367,45 +383,60 @@ export const PositionsTable: FC = () => {
               </Thead>
               <Tbody>
                 {!!positions?.futuresPositions.length &&
-                  positions.futuresPositions.map((position, index) => (
-                    <Tr key={position.account.concat(index.toString())}>
-                      <Td
-                        cursor="pointer"
-                        onClick={() => {
-                          toast({
-                            title: 'Copy to clipboard',
-                            status: 'success',
-                            isClosable: true,
-                            duration: 5000,
-                          });
-                          navigator.clipboard.writeText(position.account);
-                        }}
-                      >
-                        {position.account
-                          .substring(0, 5)
-                          .concat('...')
-                          .concat(
-                            position.account.substring(
-                              position.account.length - 5
-                            )
-                          )}
-                      </Td>
-                      <Td>{position.asset}</Td>
-                      <Td>{position.market}</Td>
-                      <Td>
-                        ${(Number(position.entryPrice) / 1e18).toFixed(2)}
-                      </Td>
-                      <Td>
-                        {position.isOpen
-                          ? '-'
-                          : `${(Number(position.exitPrice) / 1e18).toFixed(2)}`}
-                      </Td>
-                      <Td>{position.isLiquidated ? `💀` : `NO`}</Td>
-                      <Td>{position.isOpen ? `✅` : `❌`}</Td>
-                      <Td>{position?.openTimestamp}</Td>
-                      <Td>{position?.closeTimestamp}</Td>
-                    </Tr>
-                  ))}
+                  positions.futuresPositions.map((position, index) => {
+                    return (
+                      <Tr key={position.account.concat(index.toString())}>
+                        <Td
+                          cursor="pointer"
+                          onClick={() => {
+                            toast({
+                              title: 'Copy to clipboard',
+                              status: 'success',
+                              isClosable: true,
+                              duration: 5000,
+                            });
+                            navigator.clipboard.writeText(position.account);
+                          }}
+                        >
+                          {position.account
+                            .substring(0, 5)
+                            .concat('...')
+                            .concat(
+                              position.account.substring(
+                                position.account.length - 5
+                              )
+                            )}
+                        </Td>
+                        <Td>{position.asset}</Td>
+                        <Td>{position.market}</Td>
+                        <Td>
+                          ${(Number(position.entryPrice) / 1e18).toFixed(2)}
+                        </Td>
+                        <Td>
+                          {position.isOpen
+                            ? '-'
+                            : `${(Number(position.exitPrice) / 1e18).toFixed(
+                                2
+                              )}`}
+                        </Td>
+                        <Td>
+                          {Math.abs(
+                            (Number(position.size) *
+                              Number(position.lastPrice)) /
+                              Number(position.margin) /
+                              10e18
+                          )
+                            .toFixed(2)
+                            .concat('%')}
+                        </Td>
+                        <Td>{position.long ? `📈` : `📉`}</Td>
+                        <Td>{position.isLiquidated ? `💀` : `NO`}</Td>
+                        <Td>{position.isOpen ? `✅` : `❌`}</Td>
+                        <Td>{position?.openTimestamp}</Td>
+                        <Td>{position?.closeTimestamp}</Td>
+                      </Tr>
+                    );
+                  })}
               </Tbody>
             </Table>
           </TableContainer>

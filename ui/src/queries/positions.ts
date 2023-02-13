@@ -23,8 +23,12 @@ export interface FuturePosition {
   margin: string;
   initialMargin: string;
   entryPrice: string;
+  long: boolean;
+  lastPrice: string;
+  totalVolume: string;
   exitPrice: string;
   size: string;
+  maxLeverage: string;
 }
 
 export interface Trader {
@@ -105,6 +109,7 @@ const body = (
       margin
       initialMargin
       entryPrice
+      lastPrice
       exitPrice
       size
       long
@@ -188,6 +193,10 @@ function useGetPositions({
           futuresPositions: data?.futuresPositions
             .map((position) => ({
               ...position,
+              maxLeverage:
+                markets.data?.find(
+                  (d) => d.id.toLowerCase() === position.market.toLowerCase()
+                )?.maxLeverage || '0',
               asset:
                 markets.data?.find(
                   (d) => d.id.toLowerCase() === position.market.toLowerCase()
