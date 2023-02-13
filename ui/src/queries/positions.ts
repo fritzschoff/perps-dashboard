@@ -1,32 +1,46 @@
 import { useQuery } from 'react-query';
-import { OPTIMISM_GRAPH_URL } from '../utils/constants';
+import { PERPS_V2_DASHBOARD_GRAPH_URL } from '../utils/constants';
 import { utils } from 'ethers';
 import { SortConfig } from '../components/PositionsTable';
+import { useGetMarkets } from './markets';
 
 interface GraphResponse {
   data: {
     futuresPositions: FuturePosition[];
-    futuresStats: FuturesStats[];
+    traders: Trader[];
   };
 }
 
 export interface FuturePosition {
   account: string;
-  asset: string;
   id: string;
   isLiquidated: boolean;
-  marketKey: string;
+  asset: string;
+  market: string;
   isOpen: boolean;
   openTimestamp: string;
   closeTimestamp: string;
   margin: string;
   initialMargin: string;
   entryPrice: string;
+  long: boolean;
+  lastPrice: string;
+  totalVolume: string;
   exitPrice: string;
   size: string;
+  maxLeverage: string;
 }
 
-export interface FuturesStats {
+export interface Trader {
+  id: string;
+  totalLiquidations: string;
+  totalMarginLiquidated: string;
+  feesPaidToSynthetix: string;
+  pnl: string;
+  trades: FuturesTrade[];
+}
+
+export interface FuturesTrade {
   account: string;
   feesPaid: string;
   liquidations: string;
@@ -55,7 +69,7 @@ const body = (
   address?: string,
   skip?: number
 ) => {
-  return `query futurePositions {
+  return `query info {
     futuresPositions(skip: ${skip}, first: 1000,
       orderBy: "${sortConfig[0]}", orderDirection: "${
     !sortConfig[1] ? 'desc' : 'asc'
@@ -88,28 +102,31 @@ const body = (
       id
       account
       isLiquidated
-      asset
-      marketKey
+      market
       isOpen
       openTimestamp
       closeTimestamp
       margin
       initialMargin
       entryPrice
+      lastPrice
       exitPrice
       size
-    }
-    futuresStats(first: 1, where: {${
-      address ? `account: "${address.toLowerCase()}",` : ''
-    }}) {
-      account
-      feesPaid
-      liquidations
-      totalTrades
-      pnl
-      pnlWithFeesPaid
-      crossMarginVolume
+      long
+      trades
       totalVolume
+    }
+    traders(first: 1, where: {${
+      address ? `id: "${address.toLowerCase()}",` : ''
+    }}) {
+      id
+      totalLiquidations
+      totalMarginLiquidated
+      feesPaidToSynthetix
+      trades {
+        id
+      }
+      pnl
     }
   }
 `;
@@ -126,7 +143,7 @@ const refetchMore = async ({
   filterOptions: FilterOptions;
   sortConfig: SortConfig;
 }) => {
-  const response = await fetch(OPTIMISM_GRAPH_URL, {
+  const response = await fetch(PERPS_V2_DASHBOARD_GRAPH_URL, {
     method: 'POST',
     body: JSON.stringify({
       query: body(filterOptions, sortConfig, address?.toLowerCase(), skip),
@@ -134,6 +151,7 @@ const refetchMore = async ({
   });
 
   const { data }: GraphResponse = await response.json();
+
   if (!!data?.futuresPositions.length) {
     const moreRes = await refetchMore({
       filterOptions,
@@ -158,6 +176,7 @@ function useGetPositions({
   filterOptions: FilterOptions;
   sortConfig: SortConfig;
 }) {
+  const markets = useGetMarkets();
   return useQuery(
     ['positions', address?.toString(), filterOptions, sortConfig.toString()],
     async () => {
@@ -170,12 +189,21 @@ function useGetPositions({
         });
 
         return {
-          futuresStats: data?.futuresStats,
-          futuresPositions: data.futuresPositions
+          futuresStats: data?.traders,
+          futuresPositions: data?.futuresPositions
             .map((position) => ({
               ...position,
-              asset: utils.parseBytes32String(position.asset),
-              marketKey: utils.parseBytes32String(position.marketKey),
+              maxLeverage:
+                markets.data?.find(
+                  (d) => d.id.toLowerCase() === position.market.toLowerCase()
+                )?.maxLeverage || '0',
+              asset:
+                markets.data?.find(
+                  (d) => d.id.toLowerCase() === position.market.toLowerCase()
+                )?.asset || 'not found',
+              market: markets.data?.find(
+                (d) => d.id.toLowerCase() === position.market.toLowerCase()
+              )?.marketKey,
               openTimestamp: toDateTime(
                 Number(position.openTimestamp)
               ).toLocaleDateString(),

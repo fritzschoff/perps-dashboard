@@ -1,10 +1,11 @@
 import { utils } from 'ethers';
 import { useQuery } from 'react-query';
 import { OPTIMISM_GRAPH_URL } from '../utils/constants';
+import { perpsV2Contract } from '../utils/contracts';
 
 interface FutureMarketsGraphResponse {
   data: {
-    futuresMarkets: { marketKey: string; asset: string }[];
+    futuresMarkets: { marketKey: string; asset: string; id: string }[];
   };
 }
 
@@ -17,15 +18,24 @@ export const useGetMarkets = () =>
                     futuresMarkets {
                         marketKey 
                         asset
+                        id
                     }
                 }`,
       }),
     });
     const { data }: FutureMarketsGraphResponse = await response.json();
-    return data.futuresMarkets
-      .map((market) => ({
+    const dataWithMaxLeverage = await Promise.all(
+      data.futuresMarkets.map(async (market) => ({
+        ...market,
         marketKey: utils.parseBytes32String(market.marketKey),
         asset: utils.parseBytes32String(market.asset),
+        maxLeverage: await perpsV2Contract.maxLeverage(market.marketKey),
+      }))
+    );
+    return dataWithMaxLeverage
+      .map((data) => ({
+        ...data,
+        maxLeverage: utils.formatEther(data.maxLeverage),
       }))
       .filter((market) => market.marketKey.includes('PERP'));
   });

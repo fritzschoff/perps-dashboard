@@ -1,7 +1,7 @@
 import {
   address,
   abi,
-} from '@synthetixio/contracts/build/mainnet-ovm/deployment/PerpsV2ProxyETHPERP';
+} from '@synthetixio/contracts/build/mainnet-ovm/deployment/PerpsV2MarketSettings';
 import { Contract, providers } from 'ethers';
 
 const L2BatchProvider = new providers.JsonRpcBatchProvider(

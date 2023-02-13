@@ -19,7 +19,7 @@ export class PerpMarkets {
   }
 }
 
-export const PerpProxies = changetype<PerpMarkets[]>([
+export const PerpProxies = [
   new PerpMarkets(
     'AAVE',
     'sAAVEPERP',
@@ -155,6 +155,6 @@ export const PerpProxies = changetype<PerpMarkets[]>([
     'sXAUPERP',
     '0x549dbDFfbd47bD5639f9348eBE82E63e2f9F777A'
   ),
-]);
+];
 
 export const TrackingCodes = ['KWENTA', 'DECENTREX', 'POLYNOMIAL'];

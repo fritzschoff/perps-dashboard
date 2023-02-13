@@ -166,6 +166,15 @@ export class Trader extends Entity {
     this.set("feesPaidToSynthetix", Value.fromBigDecimal(value));
   }
 
+  get totalVolume(): BigDecimal {
+    let value = this.get("totalVolume");
+    return value!.toBigDecimal();
+  }
+
+  set totalVolume(value: BigDecimal) {
+    this.set("totalVolume", Value.fromBigDecimal(value));
+  }
+
   get pnl(): BigInt {
     let value = this.get("pnl");
     return value!.toBigInt();
@@ -251,6 +260,15 @@ export class FuturesTrade extends Entity {
     this.set("margin", Value.fromBigInt(value));
   }
 
+  get positionId(): string {
+    let value = this.get("positionId");
+    return value!.toString();
+  }
+
+  set positionId(value: string) {
+    this.set("positionId", Value.fromString(value));
+  }
+
   get size(): BigInt {
     let value = this.get("size");
     return value!.toBigInt();
@@ -260,22 +278,13 @@ export class FuturesTrade extends Entity {
     this.set("size", Value.fromBigInt(value));
   }
 
-  get asset(): string {
-    let value = this.get("asset");
-    return value!.toString();
-  }
-
-  set asset(value: string) {
-    this.set("asset", Value.fromString(value));
-  }
-
-  get market(): string {
+  get market(): Bytes {
     let value = this.get("market");
-    return value!.toString();
+    return value!.toBytes();
   }
 
-  set market(value: string) {
-    this.set("market", Value.fromString(value));
+  set market(value: Bytes) {
+    this.set("market", Value.fromBytes(value));
   }
 
   get price(): BigInt {
@@ -323,13 +332,13 @@ export class FuturesTrade extends Entity {
     this.set("feesPaidToSynthetix", Value.fromBigInt(value));
   }
 
-  get txHash(): string {
-    let value = this.get("txHash");
+  get type(): string {
+    let value = this.get("type");
     return value!.toString();
   }
 
-  set txHash(value: string) {
-    this.set("txHash", Value.fromString(value));
+  set type(value: string) {
+    this.set("type", Value.fromString(value));
   }
 }
 
@@ -508,22 +517,13 @@ export class FuturesPosition extends Entity {
     this.set("long", Value.fromBoolean(value));
   }
 
-  get market(): string {
+  get market(): Bytes {
     let value = this.get("market");
-    return value!.toString();
+    return value!.toBytes();
   }
 
-  set market(value: string) {
-    this.set("market", Value.fromString(value));
-  }
-
-  get asset(): string {
-    let value = this.get("asset");
-    return value!.toString();
-  }
-
-  set asset(value: string) {
-    this.set("asset", Value.fromString(value));
+  set market(value: Bytes) {
+    this.set("market", Value.fromBytes(value));
   }
 
   get isOpen(): boolean {
@@ -551,6 +551,15 @@ export class FuturesPosition extends Entity {
 
   set trades(value: BigInt) {
     this.set("trades", Value.fromBigInt(value));
+  }
+
+  get feesPaidToSynthetix(): BigInt {
+    let value = this.get("feesPaidToSynthetix");
+    return value!.toBigInt();
+  }
+
+  set feesPaidToSynthetix(value: BigInt) {
+    this.set("feesPaidToSynthetix", Value.fromBigInt(value));
   }
 
   get size(): BigInt {
@@ -631,5 +640,136 @@ export class FuturesPosition extends Entity {
     } else {
       this.set("exitPrice", Value.fromBigInt(<BigInt>value));
     }
+  }
+}
+
+export class FuturesOrder extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save FuturesOrder entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type FuturesOrder must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("FuturesOrder", id.toString(), this);
+    }
+  }
+
+  static load(id: string): FuturesOrder | null {
+    return changetype<FuturesOrder | null>(store.get("FuturesOrder", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get size(): BigInt {
+    let value = this.get("size");
+    return value!.toBigInt();
+  }
+
+  set size(value: BigInt) {
+    this.set("size", Value.fromBigInt(value));
+  }
+
+  get market(): Bytes {
+    let value = this.get("market");
+    return value!.toBytes();
+  }
+
+  set market(value: Bytes) {
+    this.set("market", Value.fromBytes(value));
+  }
+
+  get account(): Bytes {
+    let value = this.get("account");
+    return value!.toBytes();
+  }
+
+  set account(value: Bytes) {
+    this.set("account", Value.fromBytes(value));
+  }
+
+  get orderId(): BigInt {
+    let value = this.get("orderId");
+    return value!.toBigInt();
+  }
+
+  set orderId(value: BigInt) {
+    this.set("orderId", Value.fromBigInt(value));
+  }
+
+  get targetRoundId(): BigInt {
+    let value = this.get("targetRoundId");
+    return value!.toBigInt();
+  }
+
+  set targetRoundId(value: BigInt) {
+    this.set("targetRoundId", Value.fromBigInt(value));
+  }
+
+  get targetPrice(): BigInt {
+    let value = this.get("targetPrice");
+    return value!.toBigInt();
+  }
+
+  set targetPrice(value: BigInt) {
+    this.set("targetPrice", Value.fromBigInt(value));
+  }
+
+  get marginDelta(): BigInt {
+    let value = this.get("marginDelta");
+    return value!.toBigInt();
+  }
+
+  set marginDelta(value: BigInt) {
+    this.set("marginDelta", Value.fromBigInt(value));
+  }
+
+  get timestamp(): BigInt {
+    let value = this.get("timestamp");
+    return value!.toBigInt();
+  }
+
+  set timestamp(value: BigInt) {
+    this.set("timestamp", Value.fromBigInt(value));
+  }
+
+  get orderType(): string {
+    let value = this.get("orderType");
+    return value!.toString();
+  }
+
+  set orderType(value: string) {
+    this.set("orderType", Value.fromString(value));
+  }
+
+  get status(): string {
+    let value = this.get("status");
+    return value!.toString();
+  }
+
+  set status(value: string) {
+    this.set("status", Value.fromString(value));
+  }
+
+  get keeper(): Bytes {
+    let value = this.get("keeper");
+    return value!.toBytes();
+  }
+
+  set keeper(value: Bytes) {
+    this.set("keeper", Value.fromBytes(value));
   }
 }
