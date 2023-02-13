@@ -127,12 +127,15 @@ export function handlePositionModified(event: PositionModifiedEvent): void {
       trader.totalLiquidations = BigInt.fromI32(0);
       trader.totalMarginLiquidated = BigDecimal.fromString('0');
       trader.feesPaidToSynthetix = event.params.fee.toBigDecimal();
+      trader.totalVolume = event.params.tradeSize.toBigDecimal();
       trader.pnl = event.params.fee.times(BigInt.fromI32(-1));
       trader.trades = [];
     } else {
       trader.feesPaidToSynthetix = trader.feesPaidToSynthetix.plus(
         event.params.fee.toBigDecimal()
       );
+      trader.totalVolume = event.params.tradeSize.toBigDecimal();
+      trader.pnl = trader.pnl.plus(event.params.fee.times(BigInt.fromI32(-1)));
     }
     const oldTrades = trader.trades;
     oldTrades!.push(tradeEntity.id);
@@ -223,21 +226,22 @@ export function handlePositionModified(event: PositionModifiedEvent): void {
     tradeEntity.type = 'PositionModified';
     tradeEntity.save();
 
+    let volume = tradeEntity.size
+      .times(tradeEntity.price)
+      .div(BigInt.fromI32(10).pow(18))
+      .abs();
+
     if (trader) {
       trader.feesPaidToSynthetix = trader.feesPaidToSynthetix.plus(
         event.params.fee.toBigDecimal()
       );
+      trader.totalVolume = trader.totalVolume.plus(volume);
       trader.pnl = trader.pnl.plus(newPnl);
       const oldTrades = trader.trades;
       oldTrades!.push(tradeEntity.id);
       trader.trades = oldTrades;
       trader.save();
     }
-
-    let volume = tradeEntity.size
-      .times(tradeEntity.price)
-      .div(BigInt.fromI32(10).pow(18))
-      .abs();
 
     futuresPosition.totalVolume = futuresPosition.totalVolume.plus(volume);
   }

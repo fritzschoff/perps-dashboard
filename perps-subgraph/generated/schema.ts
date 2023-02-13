@@ -166,6 +166,15 @@ export class Trader extends Entity {
     this.set("feesPaidToSynthetix", Value.fromBigDecimal(value));
   }
 
+  get totalVolume(): BigDecimal {
+    let value = this.get("totalVolume");
+    return value!.toBigDecimal();
+  }
+
+  set totalVolume(value: BigDecimal) {
+    this.set("totalVolume", Value.fromBigDecimal(value));
+  }
+
   get pnl(): BigInt {
     let value = this.get("pnl");
     return value!.toBigInt();
