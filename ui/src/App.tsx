@@ -11,6 +11,8 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { PositionsTable } from './components/PositionsTable';
+import { useGetSynthetix } from './queries/synthetix';
+import { numberWithCommas } from './utils/numbers';
 
 function App() {
   const navigate = useNavigate();
@@ -18,11 +20,14 @@ function App() {
     defaultValues: { address: '' },
   });
   const { colorMode, toggleColorMode } = useColorMode();
+  const { data } = useGetSynthetix();
+
   useEffect(() => {
     if (colorMode === 'light') {
       toggleColorMode();
     }
   }, [colorMode, toggleColorMode]);
+
   return (
     <Flex
       justifyContent="center"
@@ -40,6 +45,33 @@ function App() {
       </Link>
       <Text>- OR -</Text>
       <Heading size="lg">Overview</Heading>
+      {data && (
+        <Flex
+          border="1px solid"
+          borderColor="cyan.500"
+          borderRadius="base"
+          flexDir="column"
+          alignItems="center"
+          p="4"
+        >
+          <Heading color="cyan.500">Synthetix Stats</Heading>
+          <Divider my="2" />
+          <Text>
+            Fees by Liquidations: $
+            {numberWithCommas(
+              (Number(data.synthetix.feesByLiquidations) / 1e18).toFixed(2)
+            )}
+          </Text>
+          <Text>
+            Fees by Trades: $
+            {numberWithCommas(
+              (
+                Number(data.synthetix.feesByPositionModifications) / 1e18
+              ).toFixed(2)
+            )}
+          </Text>
+        </Flex>
+      )}
       <Divider m="2" />
       <PositionsTable />
     </Flex>

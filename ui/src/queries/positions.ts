@@ -23,6 +23,7 @@ export interface FuturePosition {
   initialMargin: string;
   entryPrice: string;
   exitPrice: string;
+  size: string;
 }
 
 export interface FuturesStats {
@@ -96,6 +97,7 @@ const body = (
       initialMargin
       entryPrice
       exitPrice
+      size
     }
     futuresStats(first: 1, where: {${
       address ? `account: "${address.toLowerCase()}",` : ''
