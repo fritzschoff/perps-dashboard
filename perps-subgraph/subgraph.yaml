@@ -28,10 +28,10 @@ dataSources:
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
           handler: 'handlePositionLiquidated'
-        # - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderSubmitted'
-        # - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderRemoved'
+        - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderSubmitted'
+        - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderRemoved'
       file: ./src/futures.ts
   - kind: ethereum
     name: PerpsV2MarketProxyable1
@@ -59,10 +59,10 @@ dataSources:
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
           handler: 'handlePositionLiquidated'
-        # - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderSubmitted'
-        # - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderRemoved'
+        - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderSubmitted'
+        - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderRemoved'
       file: ./src/futures.ts
   - kind: ethereum
     name: PerpsV2MarketProxyable2
@@ -90,10 +90,10 @@ dataSources:
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
           handler: 'handlePositionLiquidated'
-        # - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderSubmitted'
-        # - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderRemoved'
+        - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderSubmitted'
+        - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderRemoved'
       file: ./src/futures.ts
   - kind: ethereum
     name: PerpsV2MarketProxyable3
@@ -121,10 +121,10 @@ dataSources:
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
           handler: 'handlePositionLiquidated'
-        # - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderSubmitted'
-        # - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderRemoved'
+        - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderSubmitted'
+        - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderRemoved'
       file: ./src/futures.ts
   - kind: ethereum
     name: PerpsV2MarketProxyable4
@@ -152,10 +152,10 @@ dataSources:
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
           handler: 'handlePositionLiquidated'
-        # - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderSubmitted'
-        # - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderRemoved'
+        - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderSubmitted'
+        - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderRemoved'
       file: ./src/futures.ts
   - kind: ethereum
     name: PerpsV2MarketProxyable5
@@ -183,10 +183,10 @@ dataSources:
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
           handler: 'handlePositionLiquidated'
-        # - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderSubmitted'
-        # - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderRemoved'
+        - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderSubmitted'
+        - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderRemoved'
       file: ./src/futures.ts
   - kind: ethereum
     name: PerpsV2MarketProxyable6
@@ -214,10 +214,10 @@ dataSources:
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
           handler: 'handlePositionLiquidated'
-        # - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderSubmitted'
-        # - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderRemoved'
+        - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderSubmitted'
+        - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderRemoved'
       file: ./src/futures.ts
   - kind: ethereum
     name: PerpsV2MarketProxyable7
@@ -245,10 +245,10 @@ dataSources:
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
           handler: 'handlePositionLiquidated'
-        # - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderSubmitted'
-        # - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderRemoved'
+        - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderSubmitted'
+        - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderRemoved'
       file: ./src/futures.ts
   - kind: ethereum
     name: PerpsV2MarketProxyable8
@@ -276,10 +276,10 @@ dataSources:
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
           handler: 'handlePositionLiquidated'
-        # - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderSubmitted'
-        # - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderRemoved'
+        - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderSubmitted'
+        - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderRemoved'
       file: ./src/futures.ts
   - kind: ethereum
     name: PerpsV2MarketProxyable9
@@ -307,10 +307,10 @@ dataSources:
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
           handler: 'handlePositionLiquidated'
-        # - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderSubmitted'
-        # - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderRemoved'
+        - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderSubmitted'
+        - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderRemoved'
       file: ./src/futures.ts
   - kind: ethereum
     name: PerpsV2MarketProxyable10
@@ -338,10 +338,10 @@ dataSources:
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
           handler: 'handlePositionLiquidated'
-        # - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderSubmitted'
-        # - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderRemoved'
+        - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderSubmitted'
+        - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderRemoved'
       file: ./src/futures.ts
   - kind: ethereum
     name: PerpsV2MarketProxyable11
@@ -369,10 +369,10 @@ dataSources:
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
           handler: 'handlePositionLiquidated'
-        # - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderSubmitted'
-        # - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderRemoved'
+        - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderSubmitted'
+        - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderRemoved'
       file: ./src/futures.ts
   - kind: ethereum
     name: PerpsV2MarketProxyable12
@@ -400,10 +400,10 @@ dataSources:
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
           handler: 'handlePositionLiquidated'
-        # - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderSubmitted'
-        # - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderRemoved'
+        - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderSubmitted'
+        - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderRemoved'
       file: ./src/futures.ts
   - kind: ethereum
     name: PerpsV2MarketProxyable13
@@ -431,10 +431,10 @@ dataSources:
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
           handler: 'handlePositionLiquidated'
-        # - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderSubmitted'
-        # - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderRemoved'
+        - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderSubmitted'
+        - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderRemoved'
       file: ./src/futures.ts
   - kind: ethereum
     name: PerpsV2MarketProxyable14
@@ -462,10 +462,10 @@ dataSources:
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
           handler: 'handlePositionLiquidated'
-        # - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderSubmitted'
-        # - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderRemoved'
+        - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderSubmitted'
+        - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderRemoved'
       file: ./src/futures.ts
   - kind: ethereum
     name: PerpsV2MarketProxyable15
@@ -493,10 +493,10 @@ dataSources:
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
           handler: 'handlePositionLiquidated'
-        # - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderSubmitted'
-        # - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderRemoved'
+        - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderSubmitted'
+        - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderRemoved'
       file: ./src/futures.ts
   - kind: ethereum
     name: PerpsV2MarketProxyable16
@@ -524,10 +524,10 @@ dataSources:
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
           handler: 'handlePositionLiquidated'
-        # - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderSubmitted'
-        # - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderRemoved'
+        - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderSubmitted'
+        - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderRemoved'
       file: ./src/futures.ts
   - kind: ethereum
     name: PerpsV2MarketProxyable17
@@ -555,10 +555,10 @@ dataSources:
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
           handler: 'handlePositionLiquidated'
-        # - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderSubmitted'
-        # - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderRemoved'
+        - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderSubmitted'
+        - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderRemoved'
       file: ./src/futures.ts
   - kind: ethereum
     name: PerpsV2MarketProxyable18
@@ -586,10 +586,10 @@ dataSources:
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
           handler: 'handlePositionLiquidated'
-        # - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderSubmitted'
-        # - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderRemoved'
+        - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderSubmitted'
+        - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderRemoved'
       file: ./src/futures.ts
   - kind: ethereum
     name: PerpsV2MarketProxyable19
@@ -617,10 +617,10 @@ dataSources:
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
           handler: 'handlePositionLiquidated'
-        # - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderSubmitted'
-        # - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderRemoved'
+        - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderSubmitted'
+        - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderRemoved'
       file: ./src/futures.ts
   - kind: ethereum
     name: PerpsV2MarketProxyable20
@@ -648,10 +648,10 @@ dataSources:
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
           handler: 'handlePositionLiquidated'
-        # - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderSubmitted'
-        # - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderRemoved'
+        - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderSubmitted'
+        - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderRemoved'
       file: ./src/futures.ts
   - kind: ethereum
     name: PerpsV2MarketProxyable21
@@ -679,8 +679,8 @@ dataSources:
           handler: 'handlePositionModified'
         - event: 'PositionLiquidated(uint256,address,address,int256,uint256,uint256)'
           handler: 'handlePositionLiquidated'
-        # - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderSubmitted'
-        # - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
-        #   handler: 'handleDelayedOrderRemoved'
+        - event: 'DelayedOrderSubmitted(indexed address,bool,int256,uint256,uint256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderSubmitted'
+        - event: 'DelayedOrderRemoved(indexed address,bool,uint256,int256,uint256,uint256,uint256,bytes32)'
+          handler: 'handleDelayedOrderRemoved'
       file: ./src/futures.ts

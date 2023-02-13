@@ -10,6 +10,7 @@ export function useGetSynthetix() {
                     synthetix(id: "synthetix") {
                         feesByLiquidations
                         feesByPositionModifications
+                        totalVolume
                     }
                 }`,
       }),
@@ -21,6 +22,7 @@ export function useGetSynthetix() {
         synthetix: {
           feesByLiquidations: string;
           feesByPositionModifications: string;
+          totalVolume: string;
         };
       };
     } = await response.json();

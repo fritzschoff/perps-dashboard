@@ -70,6 +70,12 @@ function App() {
               ).toFixed(2)
             )}
           </Text>
+          <Text>
+            Total Volume: $
+            {numberWithCommas(
+              (Number(data.synthetix.totalVolume) / 1e18).toFixed(2)
+            )}
+          </Text>
         </Flex>
       )}
       <Divider m="2" />

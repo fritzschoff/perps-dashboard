@@ -1,21 +1,20 @@
 import { useQuery } from 'react-query';
-import { OPTIMISM_GRAPH_URL } from '../utils/constants';
+import { PerpProxies, PERPS_V2_DASHBOARD_GRAPH_URL } from '../utils/constants';
 import { utils } from 'ethers';
 import { SortConfig } from '../components/PositionsTable';
 
 interface GraphResponse {
   data: {
     futuresPositions: FuturePosition[];
-    futuresStats: FuturesStats[];
+    traders: Trader[];
   };
 }
 
 export interface FuturePosition {
   account: string;
-  asset: string;
   id: string;
   isLiquidated: boolean;
-  marketKey: string;
+  market: string;
   isOpen: boolean;
   openTimestamp: string;
   closeTimestamp: string;
@@ -26,7 +25,16 @@ export interface FuturePosition {
   size: string;
 }
 
-export interface FuturesStats {
+export interface Trader {
+  id: string;
+  totalLiquidations: string;
+  totalMarginLiquidated: string;
+  feesPaidToSynthetix: string;
+  pnl: string;
+  trades: FuturesTrade[];
+}
+
+export interface FuturesTrade {
   account: string;
   feesPaid: string;
   liquidations: string;
@@ -55,7 +63,7 @@ const body = (
   address?: string,
   skip?: number
 ) => {
-  return `query futurePositions {
+  return `query info {
     futuresPositions(skip: ${skip}, first: 1000,
       orderBy: "${sortConfig[0]}", orderDirection: "${
     !sortConfig[1] ? 'desc' : 'asc'
@@ -88,8 +96,7 @@ const body = (
       id
       account
       isLiquidated
-      asset
-      marketKey
+      market
       isOpen
       openTimestamp
       closeTimestamp
@@ -98,18 +105,21 @@ const body = (
       entryPrice
       exitPrice
       size
-    }
-    futuresStats(first: 1, where: {${
-      address ? `account: "${address.toLowerCase()}",` : ''
-    }}) {
-      account
-      feesPaid
-      liquidations
-      totalTrades
-      pnl
-      pnlWithFeesPaid
-      crossMarginVolume
+      long
+      trades
       totalVolume
+    }
+    traders(first: 1, where: {${
+      address ? `id: "${address.toLowerCase()}",` : ''
+    }}) {
+      id
+      totalLiquidations
+      totalMarginLiquidated
+      feesPaidToSynthetix
+      trades {
+        id
+      }
+      pnl
     }
   }
 `;
@@ -126,7 +136,7 @@ const refetchMore = async ({
   filterOptions: FilterOptions;
   sortConfig: SortConfig;
 }) => {
-  const response = await fetch(OPTIMISM_GRAPH_URL, {
+  const response = await fetch(PERPS_V2_DASHBOARD_GRAPH_URL, {
     method: 'POST',
     body: JSON.stringify({
       query: body(filterOptions, sortConfig, address?.toLowerCase(), skip),
@@ -134,6 +144,7 @@ const refetchMore = async ({
   });
 
   const { data }: GraphResponse = await response.json();
+
   if (!!data?.futuresPositions.length) {
     const moreRes = await refetchMore({
       filterOptions,
@@ -168,14 +179,24 @@ function useGetPositions({
           filterOptions,
           sortConfig,
         });
-
+        console.log(data);
         return {
-          futuresStats: data?.futuresStats,
-          futuresPositions: data.futuresPositions
+          futuresStats: data?.traders,
+          futuresPositions: data?.futuresPositions
             .map((position) => ({
               ...position,
-              asset: utils.parseBytes32String(position.asset),
-              marketKey: utils.parseBytes32String(position.marketKey),
+              asset:
+                PerpProxies.find(
+                  (proxy) =>
+                    proxy.getAddress().toLowerCase() ===
+                    position.market.toLowerCase()
+                )?.getAsset() || 'not found',
+              market:
+                PerpProxies.find(
+                  (proxy) =>
+                    proxy.getMarket().toLowerCase() ===
+                    position.market.toLowerCase()
+                )?.getMarket() || 'not found',
               openTimestamp: toDateTime(
                 Number(position.openTimestamp)
               ).toLocaleDateString(),

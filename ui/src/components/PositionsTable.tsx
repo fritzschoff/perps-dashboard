@@ -85,7 +85,6 @@ export const PositionsTable: FC = () => {
       refetch().then(() => setRefetchLoading(false));
     }, 0);
   };
-
   return (
     <>
       <Flex py="2" gap="2" justifyContent="space-around" w="100%">
@@ -213,23 +212,16 @@ export const PositionsTable: FC = () => {
                   return (
                     <Flex flexDir="column" key="only-one">
                       <Text>
-                        Fees Paid: ${(Number(stats.feesPaid) / 1e18).toFixed(2)}
+                        Fees Paid: $
+                        {(Number(stats.feesPaidToSynthetix) / 1e18).toFixed(2)}
                       </Text>
-                      <Text>Liquidations: {stats.liquidations}</Text>
+                      <Text>Liquidations: {stats.totalLiquidations}</Text>
                       <Text>PNL: ${(Number(stats.pnl) / 1e18).toFixed(2)}</Text>
-                      <Text>
-                        PNL Minus Fees: $
-                        {(Number(stats.pnlWithFeesPaid) / 1e18).toFixed(2)}
-                      </Text>
-                      <Text>Total trades: {stats.totalTrades}</Text>
-                      <Text>
+                      <Text>Total trades: {stats.trades.length}</Text>
+                      {/* <Text>
                         Total volume: $
-                        {(Number(stats.totalVolume) / 1e18).toFixed(2)}
-                      </Text>
-                      <Text>
-                        Cross Margin Volume: $
-                        {(Number(stats.crossMarginVolume) / 1e18).toFixed(2)}
-                      </Text>
+                        {(Number(stats.) / 1e18).toFixed(2)}
+                      </Text> */}
                     </Flex>
                   );
                 })}
