@@ -22,6 +22,9 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: PerpsV2MarketProxyable/abis/PerpsV2MarketProxyable.json
       eventHandlers:
+        - event: PositionModified(indexed uint256,indexed
+            address,uint256,int256,int256,uint256,uint256,uint256)
+          handler: handlePositionModified
         - event: PositionLiquidated(uint256,address,address,int256,uint256,uint256)
           handler: handlePositionLiquidated
       file: PerpsV2MarketProxyable/PerpsV2MarketProxyable.wasm
@@ -45,6 +48,9 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: PerpsV2MarketProxyable1/abis/PerpsV2MarketProxyable.json
       eventHandlers:
+        - event: PositionModified(indexed uint256,indexed
+            address,uint256,int256,int256,uint256,uint256,uint256)
+          handler: handlePositionModified
         - event: PositionLiquidated(uint256,address,address,int256,uint256,uint256)
           handler: handlePositionLiquidated
       file: PerpsV2MarketProxyable/PerpsV2MarketProxyable.wasm
@@ -68,6 +74,9 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: PerpsV2MarketProxyable2/abis/PerpsV2MarketProxyable.json
       eventHandlers:
+        - event: PositionModified(indexed uint256,indexed
+            address,uint256,int256,int256,uint256,uint256,uint256)
+          handler: handlePositionModified
         - event: PositionLiquidated(uint256,address,address,int256,uint256,uint256)
           handler: handlePositionLiquidated
       file: PerpsV2MarketProxyable/PerpsV2MarketProxyable.wasm
@@ -91,6 +100,9 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: PerpsV2MarketProxyable3/abis/PerpsV2MarketProxyable.json
       eventHandlers:
+        - event: PositionModified(indexed uint256,indexed
+            address,uint256,int256,int256,uint256,uint256,uint256)
+          handler: handlePositionModified
         - event: PositionLiquidated(uint256,address,address,int256,uint256,uint256)
           handler: handlePositionLiquidated
       file: PerpsV2MarketProxyable/PerpsV2MarketProxyable.wasm
@@ -114,6 +126,9 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: PerpsV2MarketProxyable4/abis/PerpsV2MarketProxyable.json
       eventHandlers:
+        - event: PositionModified(indexed uint256,indexed
+            address,uint256,int256,int256,uint256,uint256,uint256)
+          handler: handlePositionModified
         - event: PositionLiquidated(uint256,address,address,int256,uint256,uint256)
           handler: handlePositionLiquidated
       file: PerpsV2MarketProxyable/PerpsV2MarketProxyable.wasm
@@ -137,6 +152,9 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: PerpsV2MarketProxyable5/abis/PerpsV2MarketProxyable.json
       eventHandlers:
+        - event: PositionModified(indexed uint256,indexed
+            address,uint256,int256,int256,uint256,uint256,uint256)
+          handler: handlePositionModified
         - event: PositionLiquidated(uint256,address,address,int256,uint256,uint256)
           handler: handlePositionLiquidated
       file: PerpsV2MarketProxyable/PerpsV2MarketProxyable.wasm
@@ -160,6 +178,9 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: PerpsV2MarketProxyable6/abis/PerpsV2MarketProxyable.json
       eventHandlers:
+        - event: PositionModified(indexed uint256,indexed
+            address,uint256,int256,int256,uint256,uint256,uint256)
+          handler: handlePositionModified
         - event: PositionLiquidated(uint256,address,address,int256,uint256,uint256)
           handler: handlePositionLiquidated
       file: PerpsV2MarketProxyable/PerpsV2MarketProxyable.wasm
@@ -183,6 +204,9 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: PerpsV2MarketProxyable7/abis/PerpsV2MarketProxyable.json
       eventHandlers:
+        - event: PositionModified(indexed uint256,indexed
+            address,uint256,int256,int256,uint256,uint256,uint256)
+          handler: handlePositionModified
         - event: PositionLiquidated(uint256,address,address,int256,uint256,uint256)
           handler: handlePositionLiquidated
       file: PerpsV2MarketProxyable/PerpsV2MarketProxyable.wasm
@@ -206,6 +230,9 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: PerpsV2MarketProxyable8/abis/PerpsV2MarketProxyable.json
       eventHandlers:
+        - event: PositionModified(indexed uint256,indexed
+            address,uint256,int256,int256,uint256,uint256,uint256)
+          handler: handlePositionModified
         - event: PositionLiquidated(uint256,address,address,int256,uint256,uint256)
           handler: handlePositionLiquidated
       file: PerpsV2MarketProxyable/PerpsV2MarketProxyable.wasm
@@ -229,6 +256,9 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: PerpsV2MarketProxyable9/abis/PerpsV2MarketProxyable.json
       eventHandlers:
+        - event: PositionModified(indexed uint256,indexed
+            address,uint256,int256,int256,uint256,uint256,uint256)
+          handler: handlePositionModified
         - event: PositionLiquidated(uint256,address,address,int256,uint256,uint256)
           handler: handlePositionLiquidated
       file: PerpsV2MarketProxyable/PerpsV2MarketProxyable.wasm
@@ -252,6 +282,9 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: PerpsV2MarketProxyable10/abis/PerpsV2MarketProxyable.json
       eventHandlers:
+        - event: PositionModified(indexed uint256,indexed
+            address,uint256,int256,int256,uint256,uint256,uint256)
+          handler: handlePositionModified
         - event: PositionLiquidated(uint256,address,address,int256,uint256,uint256)
           handler: handlePositionLiquidated
       file: PerpsV2MarketProxyable/PerpsV2MarketProxyable.wasm
@@ -275,6 +308,9 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: PerpsV2MarketProxyable11/abis/PerpsV2MarketProxyable.json
       eventHandlers:
+        - event: PositionModified(indexed uint256,indexed
+            address,uint256,int256,int256,uint256,uint256,uint256)
+          handler: handlePositionModified
         - event: PositionLiquidated(uint256,address,address,int256,uint256,uint256)
           handler: handlePositionLiquidated
       file: PerpsV2MarketProxyable/PerpsV2MarketProxyable.wasm
@@ -298,6 +334,9 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: PerpsV2MarketProxyable12/abis/PerpsV2MarketProxyable.json
       eventHandlers:
+        - event: PositionModified(indexed uint256,indexed
+            address,uint256,int256,int256,uint256,uint256,uint256)
+          handler: handlePositionModified
         - event: PositionLiquidated(uint256,address,address,int256,uint256,uint256)
           handler: handlePositionLiquidated
       file: PerpsV2MarketProxyable/PerpsV2MarketProxyable.wasm
@@ -321,6 +360,9 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: PerpsV2MarketProxyable13/abis/PerpsV2MarketProxyable.json
       eventHandlers:
+        - event: PositionModified(indexed uint256,indexed
+            address,uint256,int256,int256,uint256,uint256,uint256)
+          handler: handlePositionModified
         - event: PositionLiquidated(uint256,address,address,int256,uint256,uint256)
           handler: handlePositionLiquidated
       file: PerpsV2MarketProxyable/PerpsV2MarketProxyable.wasm
@@ -344,6 +386,9 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: PerpsV2MarketProxyable14/abis/PerpsV2MarketProxyable.json
       eventHandlers:
+        - event: PositionModified(indexed uint256,indexed
+            address,uint256,int256,int256,uint256,uint256,uint256)
+          handler: handlePositionModified
         - event: PositionLiquidated(uint256,address,address,int256,uint256,uint256)
           handler: handlePositionLiquidated
       file: PerpsV2MarketProxyable/PerpsV2MarketProxyable.wasm
@@ -367,6 +412,9 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: PerpsV2MarketProxyable15/abis/PerpsV2MarketProxyable.json
       eventHandlers:
+        - event: PositionModified(indexed uint256,indexed
+            address,uint256,int256,int256,uint256,uint256,uint256)
+          handler: handlePositionModified
         - event: PositionLiquidated(uint256,address,address,int256,uint256,uint256)
           handler: handlePositionLiquidated
       file: PerpsV2MarketProxyable/PerpsV2MarketProxyable.wasm
@@ -390,6 +438,9 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: PerpsV2MarketProxyable16/abis/PerpsV2MarketProxyable.json
       eventHandlers:
+        - event: PositionModified(indexed uint256,indexed
+            address,uint256,int256,int256,uint256,uint256,uint256)
+          handler: handlePositionModified
         - event: PositionLiquidated(uint256,address,address,int256,uint256,uint256)
           handler: handlePositionLiquidated
       file: PerpsV2MarketProxyable/PerpsV2MarketProxyable.wasm
@@ -413,6 +464,9 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: PerpsV2MarketProxyable17/abis/PerpsV2MarketProxyable.json
       eventHandlers:
+        - event: PositionModified(indexed uint256,indexed
+            address,uint256,int256,int256,uint256,uint256,uint256)
+          handler: handlePositionModified
         - event: PositionLiquidated(uint256,address,address,int256,uint256,uint256)
           handler: handlePositionLiquidated
       file: PerpsV2MarketProxyable/PerpsV2MarketProxyable.wasm
@@ -436,6 +490,9 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: PerpsV2MarketProxyable18/abis/PerpsV2MarketProxyable.json
       eventHandlers:
+        - event: PositionModified(indexed uint256,indexed
+            address,uint256,int256,int256,uint256,uint256,uint256)
+          handler: handlePositionModified
         - event: PositionLiquidated(uint256,address,address,int256,uint256,uint256)
           handler: handlePositionLiquidated
       file: PerpsV2MarketProxyable/PerpsV2MarketProxyable.wasm
@@ -459,6 +516,9 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: PerpsV2MarketProxyable19/abis/PerpsV2MarketProxyable.json
       eventHandlers:
+        - event: PositionModified(indexed uint256,indexed
+            address,uint256,int256,int256,uint256,uint256,uint256)
+          handler: handlePositionModified
         - event: PositionLiquidated(uint256,address,address,int256,uint256,uint256)
           handler: handlePositionLiquidated
       file: PerpsV2MarketProxyable/PerpsV2MarketProxyable.wasm
@@ -482,6 +542,9 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: PerpsV2MarketProxyable20/abis/PerpsV2MarketProxyable.json
       eventHandlers:
+        - event: PositionModified(indexed uint256,indexed
+            address,uint256,int256,int256,uint256,uint256,uint256)
+          handler: handlePositionModified
         - event: PositionLiquidated(uint256,address,address,int256,uint256,uint256)
           handler: handlePositionLiquidated
       file: PerpsV2MarketProxyable/PerpsV2MarketProxyable.wasm
@@ -505,6 +568,9 @@ dataSources:
         - name: PerpsV2MarketProxyable
           file: PerpsV2MarketProxyable21/abis/PerpsV2MarketProxyable.json
       eventHandlers:
+        - event: PositionModified(indexed uint256,indexed
+            address,uint256,int256,int256,uint256,uint256,uint256)
+          handler: handlePositionModified
         - event: PositionLiquidated(uint256,address,address,int256,uint256,uint256)
           handler: handlePositionLiquidated
       file: PerpsV2MarketProxyable/PerpsV2MarketProxyable.wasm
