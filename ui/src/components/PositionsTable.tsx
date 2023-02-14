@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -33,6 +33,8 @@ import {
   ExternalLinkIcon,
 } from '@chakra-ui/icons';
 import { numberWithCommas } from '../utils/numbers';
+import ReactPaginate from 'react-paginate';
+import './PositionTable.css';
 
 export type SortConfig = [
   (
@@ -88,12 +90,25 @@ export const PositionsTable: FC = () => {
     },
     sortConfig,
   });
+  const [itemOffset, setItemOffset] = useState(0);
+  const endOffset = itemOffset + 100;
+  const currentItems = positions?.futuresPositions.slice(itemOffset, endOffset);
+  const pageCount = positions?.futuresPositions
+    ? Math.ceil(positions?.futuresPositions.length / 100)
+    : 1;
 
   const triggerRefetch = () => {
     setRefetchLoading(true);
     setTimeout(() => {
       refetch().then(() => setRefetchLoading(false));
     }, 0);
+  };
+
+  const handlePageClick = ({ selected }: { selected: number }) => {
+    if (positions?.futuresPositions) {
+      const newOffset = (selected * 100) % positions?.futuresPositions.length;
+      setItemOffset(newOffset);
+    }
   };
 
   return (
@@ -437,8 +452,8 @@ export const PositionsTable: FC = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {!!positions?.futuresPositions.length &&
-                  positions.futuresPositions.map((position, index) => {
+                {!!currentItems &&
+                  currentItems.map((position, index) => {
                     return (
                       <Tr key={position.account.concat(index.toString())}>
                         <Td
@@ -483,7 +498,7 @@ export const PositionsTable: FC = () => {
                         <Td>
                           {position.isOpen
                             ? '-'
-                            : `${(Number(position.exitPrice) / 1e18).toFixed(
+                            : `$${(Number(position.exitPrice) / 1e18).toFixed(
                                 2
                               )}`}
                         </Td>
@@ -528,6 +543,21 @@ export const PositionsTable: FC = () => {
               </Tbody>
             </Table>
           </TableContainer>
+
+          <ReactPaginate
+            className="paginator"
+            pageClassName="pageItems"
+            nextClassName="nextButton"
+            previousClassName="previousButton"
+            breakClassName="breakSpacer"
+            activeClassName="activePage"
+            breakLabel="..."
+            nextLabel="Next =>"
+            onPageChange={handlePageClick}
+            pageRangeDisplayed={5}
+            pageCount={pageCount}
+            previousLabel="<= Previous"
+          />
         </>
       )}
     </>
