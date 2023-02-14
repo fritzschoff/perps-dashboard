@@ -4,8 +4,9 @@ import {
   DelayedOrderRemoved,
   DelayedOrderSubmitted,
   PositionModified,
+  PositionLiquidated,
 } from '../generated/PerpsV2MarketProxyable/PerpsV2MarketProxyable';
-import { PositionLiquidated } from '../generated/schema';
+
 function createBlock(timestamp: i64, blockNumber: i64): Map<string, i64> {
   const newBlock = new Map<string, i64>();
   newBlock.set('timestamp', timestamp);
@@ -219,7 +220,7 @@ export function createDelayedOrderSubmittedEvent(
   delayedOrderSubmitted.parameters.push(
     new ethereum.EventParam(
       'executableAtTime',
-      ethereum.Value.fromSignedBigInt(intentionTime)
+      ethereum.Value.fromSignedBigInt(executableAtTime)
     )
   );
   delayedOrderSubmitted.parameters.push(

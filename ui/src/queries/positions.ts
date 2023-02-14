@@ -25,6 +25,7 @@ export interface FuturePosition {
   entryPrice: string;
   long: boolean;
   lastPrice: string;
+  leverage: string;
   totalVolume: string;
   exitPrice: string;
   size: string;
@@ -130,6 +131,7 @@ const body = ({
       entryPrice
       lastPrice
       exitPrice
+      leverage
       size
       long
       trades

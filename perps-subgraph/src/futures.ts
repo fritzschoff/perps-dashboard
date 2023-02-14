@@ -102,11 +102,6 @@ export function handlePositionModified(event: PositionModifiedEvent): void {
       .div(BigInt.fromI32(10).pow(18))
       .abs()
       .toBigDecimal();
-    // If liquidated, we add the fees in the liquidation handler
-  } else if (!event.params.size.isZero() && !event.params.tradeSize.isZero()) {
-    synthetix.feesByPositionModifications = synthetix.feesByPositionModifications.plus(
-      event.params.fee.toBigDecimal()
-    );
   }
 
   // New position when var futuresPosition is undefined
@@ -168,6 +163,9 @@ export function handlePositionModified(event: PositionModifiedEvent): void {
       trader.trades = [
         event.transaction.hash.toHex() + '-' + event.logIndex.toString(),
       ];
+      if (synthetix) {
+        synthetix.totalTraders = synthetix.totalTraders.plus(BigInt.fromI32(1));
+      }
     } else {
       trader.feesPaidToSynthetix = trader.feesPaidToSynthetix.plus(
         event.params.fee.toBigDecimal()
@@ -177,12 +175,6 @@ export function handlePositionModified(event: PositionModifiedEvent): void {
       const oldTrades = trader.trades;
       oldTrades.push(tradeEntity.id);
       trader.trades = oldTrades;
-    }
-
-    if (!synthetix) {
-      synthetix.totalTraders = BigInt.fromI32(1);
-    } else {
-      synthetix.totalTraders = synthetix.totalTraders.plus(BigInt.fromI32(1));
     }
   } else {
     // Position closed & not liquidated
@@ -208,6 +200,7 @@ export function handlePositionModified(event: PositionModifiedEvent): void {
       futuresPosition.margin = event.params.margin;
       futuresPosition.size = event.params.size;
       futuresPosition.lastPrice = event.params.lastPrice;
+      futuresPosition.trades = futuresPosition.trades.plus(BigInt.fromI32(1));
       futuresPosition.leverage = event.params.size
         .times(event.params.lastPrice)
         .div(event.params.margin)
@@ -239,10 +232,9 @@ export function handlePositionModified(event: PositionModifiedEvent): void {
         trader.trades = oldTrades;
       }
 
-      synthetix.totalVolume = synthetix.totalVolume.plus(
-        event.params.tradeSize.toBigDecimal()
+      synthetix.feesByPositionModifications = synthetix.feesByPositionModifications.plus(
+        event.params.fee.toBigDecimal()
       );
-      synthetix.totalTraders = synthetix.totalTraders.plus(BigInt.fromI32(1));
     }
 
     // If tradeSize and size are not zero, position got modified
@@ -289,10 +281,11 @@ export function handlePositionModified(event: PositionModifiedEvent): void {
       tradeEntity.type = 'PositionModified';
       tradeEntity.save();
 
-      let volume = event.params.tradeSize
+      const volume = event.params.tradeSize
         .times(event.params.lastPrice)
         .div(BigInt.fromI32(10).pow(18))
         .abs();
+
       if (trader) {
         trader.feesPaidToSynthetix = trader.feesPaidToSynthetix.plus(
           event.params.fee.toBigDecimal()
@@ -305,6 +298,9 @@ export function handlePositionModified(event: PositionModifiedEvent): void {
       }
 
       synthetix.totalVolume = synthetix.totalVolume.plus(volume.toBigDecimal());
+      synthetix.feesByPositionModifications = synthetix.feesByPositionModifications.plus(
+        event.params.fee.toBigDecimal()
+      );
 
       futuresPosition.totalVolume = futuresPosition.totalVolume.plus(volume);
     } else {
