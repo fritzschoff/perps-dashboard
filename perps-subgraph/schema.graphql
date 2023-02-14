@@ -16,7 +16,7 @@ type Trader @entity {
   feesPaidToSynthetix: BigDecimal!
   totalVolume: BigDecimal!
   pnl: BigInt!
-  trades: [FuturesTrade!]
+  trades: [FuturesTrade!]!
 }
 
 type FuturesTrade @entity {
@@ -56,6 +56,7 @@ type Synthetix @entity {
   feesByPositionModifications: BigDecimal!
   totalLiquidations: BigInt!
   totalVolume: BigDecimal!
+  totalTraders: BigInt!
 }
 
 type Partner @entity {
@@ -76,7 +77,8 @@ type FuturesPosition @entity {
   feesPaidToSynthetix: BigInt!
   size: BigInt!
   initialMargin: BigInt!
-  # add netFunding for correct PNL
+  leverage: BigInt!
+  netFunding: BigInt!
   margin: BigInt!
   pnl: BigInt!
   totalVolume: BigInt!

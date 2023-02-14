@@ -17,7 +17,6 @@ function toEth(n: i32): BigInt {
 
 /**
  * - check pnl calc
- * - add leverage to subgraph
  */
 
 describe('Perps V2', () => {
@@ -30,7 +29,7 @@ describe('Perps V2', () => {
       BigInt.fromI32(1),
       Address.fromString(trader),
       toEth(200),
-      BigInt.fromI32(0),
+      BigInt.fromI32(20),
       toEth(100),
       toEth(1000),
       BigInt.fromI32(1),
@@ -62,7 +61,7 @@ describe('Perps V2', () => {
       'FuturesPosition',
       `${event.address.toHex() + '-' + '0x1'}`,
       'size',
-      '0'
+      '20'
     );
     assert.fieldEquals(
       'FuturesPosition',
@@ -182,7 +181,7 @@ describe('Perps V2', () => {
       'FuturesTrade',
       `${event.transaction.hash.toHex() + '-' + event.logIndex.toString()}`,
       'positionSize',
-      toEth(0).toString()
+      '20'
     );
     assert.fieldEquals(
       'FuturesTrade',

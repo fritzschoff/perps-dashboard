@@ -184,21 +184,13 @@ export class Trader extends Entity {
     this.set("pnl", Value.fromBigInt(value));
   }
 
-  get trades(): Array<string> | null {
+  get trades(): Array<string> {
     let value = this.get("trades");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toStringArray();
-    }
+    return value!.toStringArray();
   }
 
-  set trades(value: Array<string> | null) {
-    if (!value) {
-      this.unset("trades");
-    } else {
-      this.set("trades", Value.fromStringArray(<Array<string>>value));
-    }
+  set trades(value: Array<string>) {
+    this.set("trades", Value.fromStringArray(value));
   }
 }
 
@@ -408,6 +400,15 @@ export class Synthetix extends Entity {
   set totalVolume(value: BigDecimal) {
     this.set("totalVolume", Value.fromBigDecimal(value));
   }
+
+  get totalTraders(): BigInt {
+    let value = this.get("totalTraders");
+    return value!.toBigInt();
+  }
+
+  set totalTraders(value: BigInt) {
+    this.set("totalTraders", Value.fromBigInt(value));
+  }
 }
 
 export class Partner extends Entity {
@@ -587,6 +588,24 @@ export class FuturesPosition extends Entity {
 
   set initialMargin(value: BigInt) {
     this.set("initialMargin", Value.fromBigInt(value));
+  }
+
+  get leverage(): BigInt {
+    let value = this.get("leverage");
+    return value!.toBigInt();
+  }
+
+  set leverage(value: BigInt) {
+    this.set("leverage", Value.fromBigInt(value));
+  }
+
+  get netFunding(): BigInt {
+    let value = this.get("netFunding");
+    return value!.toBigInt();
+  }
+
+  set netFunding(value: BigInt) {
+    this.set("netFunding", Value.fromBigInt(value));
   }
 
   get margin(): BigInt {
