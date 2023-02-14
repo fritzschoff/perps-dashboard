@@ -68,7 +68,15 @@ const body = (
   filterOptions: FilterOptions,
   sortConfig: SortConfig,
   address?: string,
-  skip?: number
+  skip?: number,
+  market:
+    | {
+        maxLeverage: string;
+        marketKey: string;
+        asset: string;
+        id: string;
+      }[]
+    | undefined
 ) => {
   return `query info {
     futuresPositions(skip: ${skip}, first: 1000,
@@ -79,7 +87,11 @@ const body = (
     ${
       filterOptions.asset === 'all'
         ? ''
-        : `asset: "${utils.formatBytes32String(filterOptions.asset)}"`
+        : `market: "${market
+            ?.find(
+              (m) => m.asset.toLowerCase() === filterOptions.asset.toLowerCase()
+            )
+            ?.id.toLowerCase()}"`
     },
     ${
       filterOptions.deactivateLiquidated
@@ -139,16 +151,31 @@ const refetchMore = async ({
   skip,
   filterOptions,
   sortConfig,
+  marketData,
 }: {
   address?: string;
   skip: number;
   filterOptions: FilterOptions;
   sortConfig: SortConfig;
+  marketData:
+    | {
+        maxLeverage: string;
+        marketKey: string;
+        asset: string;
+        id: string;
+      }[]
+    | undefined;
 }) => {
   const response = await fetch(PERPS_V2_DASHBOARD_GRAPH_URL, {
     method: 'POST',
     body: JSON.stringify({
-      query: body(filterOptions, sortConfig, address?.toLowerCase(), skip),
+      query: body(
+        filterOptions,
+        sortConfig,
+        address?.toLowerCase(),
+        skip,
+        marketData
+      ),
     }),
   });
 
@@ -160,6 +187,7 @@ const refetchMore = async ({
       sortConfig,
       address,
       skip: skip + 1000,
+      marketData,
     });
     if (moreRes?.futuresPositions.length)
       data.futuresPositions = data.futuresPositions.concat(
@@ -178,9 +206,15 @@ function useGetPositions({
   filterOptions: FilterOptions;
   sortConfig: SortConfig;
 }) {
-  const markets = useGetMarkets();
+  const { data: marketData } = useGetMarkets();
   return useQuery(
-    ['positions', address?.toString(), filterOptions, sortConfig.toString()],
+    [
+      'positions',
+      address?.toString(),
+      filterOptions,
+      sortConfig.toString(),
+      marketData?.toString(),
+    ],
     async () => {
       try {
         const data = await refetchMore({
@@ -188,6 +222,7 @@ function useGetPositions({
           skip: 0,
           filterOptions,
           sortConfig,
+          marketData,
         });
 
         return {
@@ -196,14 +231,14 @@ function useGetPositions({
             .map((position) => ({
               ...position,
               maxLeverage:
-                markets.data?.find(
+                marketData?.find(
                   (d) => d.id.toLowerCase() === position.market.toLowerCase()
                 )?.maxLeverage || '0',
               asset:
-                markets.data?.find(
+                marketData?.find(
                   (d) => d.id.toLowerCase() === position.market.toLowerCase()
                 )?.asset || 'not found',
-              market: markets.data?.find(
+              market: marketData?.find(
                 (d) => d.id.toLowerCase() === position.market.toLowerCase()
               )?.marketKey,
               openTimestamp: toDateTime(

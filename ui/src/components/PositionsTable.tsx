@@ -91,10 +91,11 @@ export const PositionsTable: FC = () => {
     sortConfig,
   });
   const [itemOffset, setItemOffset] = useState(0);
-  const endOffset = itemOffset + 100;
-  const currentItems = positions?.futuresPositions.slice(itemOffset, endOffset);
+  const endOffset = itemOffset + 50;
+  const currentItems =
+    positions?.futuresPositions?.slice(itemOffset, endOffset) || [];
   const pageCount = positions?.futuresPositions
-    ? Math.ceil(positions?.futuresPositions.length / 100)
+    ? Math.ceil(positions?.futuresPositions.length / 50)
     : 1;
 
   const triggerRefetch = () => {
