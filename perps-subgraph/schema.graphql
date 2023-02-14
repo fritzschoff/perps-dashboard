@@ -75,6 +75,7 @@ type FuturesPosition @entity {
   feesPaidToSynthetix: BigInt!
   size: BigInt!
   initialMargin: BigInt!
+  # add netFunding for correct PNL
   margin: BigInt!
   pnl: BigInt!
   totalVolume: BigInt!

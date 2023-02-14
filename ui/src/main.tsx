@@ -14,6 +14,7 @@ const router = createBrowserRouter([
     path: '/',
     element: <App />,
   },
+  // TODO @MF after page refresh it crashes on vercel
   {
     path: ':walletAddress',
     element: <Wallet />,

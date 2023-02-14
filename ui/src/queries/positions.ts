@@ -28,6 +28,7 @@ export interface FuturePosition {
   totalVolume: string;
   exitPrice: string;
   size: string;
+  feesPaidToSynthetix: string;
   maxLeverage: string;
 }
 
@@ -115,6 +116,7 @@ const body = (
       long
       trades
       totalVolume
+      feesPaidToSynthetix
     }
     traders(first: 1, where: {${
       address ? `id: "${address.toLowerCase()}",` : ''
@@ -206,13 +208,19 @@ function useGetPositions({
               )?.marketKey,
               openTimestamp: toDateTime(
                 Number(position.openTimestamp)
-              ).toLocaleDateString(),
+              ).toLocaleDateString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+              }),
               closeTimestamp:
                 position.closeTimestamp === null
                   ? '-'
                   : toDateTime(
                       Number(position.closeTimestamp)
-                    ).toLocaleDateString(),
+                    ).toLocaleDateString('en-US', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    }),
             }))
             .filter((position) => {
               if (address) {

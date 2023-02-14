@@ -6,6 +6,7 @@ import {
   Divider,
   Flex,
   Heading,
+  IconButton,
   Input,
   Radio,
   RadioGroup,
@@ -26,7 +27,12 @@ import useGetPositions from '../queries/positions';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import { useGetMarkets } from '../queries/markets';
-import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
+import {
+  ChevronDownIcon,
+  ChevronUpIcon,
+  ExternalLinkIcon,
+} from '@chakra-ui/icons';
+import { numberWithCommas } from '../utils/numbers';
 
 export type SortConfig = [
   (
@@ -40,6 +46,9 @@ export type SortConfig = [
     | 'openTimestamp'
     | 'closeTimestamp'
     | 'long'
+    | 'size'
+    | 'margin'
+    | 'feesPaidToSynthetix'
   ),
   boolean
 ];
@@ -307,13 +316,59 @@ export const PositionsTable: FC = () => {
                   <Th
                     cursor="pointer"
                     onClick={() => {
+                      setSortConfig((state) => ['margin', !state[1]]);
+                      triggerRefetch();
+                    }}
+                    border={sortConfig[0] === 'margin' ? '1px solid' : ''}
+                    borderColor={sortConfig[0] === 'margin' ? 'cyan.500' : ''}
+                  >
+                    Margin
+                    {sortConfig[0] === 'margin' &&
+                      (sortConfig[1] ? <ChevronDownIcon /> : <ChevronUpIcon />)}
+                  </Th>
+                  <Th
+                    cursor="pointer"
+                    onClick={() => {
+                      setSortConfig((state) => ['size', !state[1]]);
+                      triggerRefetch();
+                    }}
+                    border={sortConfig[0] === 'size' ? '1px solid' : ''}
+                    borderColor={sortConfig[0] === 'size' ? 'cyan.500' : ''}
+                  >
+                    Size
+                    {sortConfig[0] === 'size' &&
+                      (sortConfig[1] ? <ChevronDownIcon /> : <ChevronUpIcon />)}
+                  </Th>
+                  <Th
+                    cursor="pointer"
+                    onClick={() => {
+                      setSortConfig((state) => [
+                        'feesPaidToSynthetix',
+                        !state[1],
+                      ]);
+                      triggerRefetch();
+                    }}
+                    border={
+                      sortConfig[0] === 'feesPaidToSynthetix' ? '1px solid' : ''
+                    }
+                    borderColor={
+                      sortConfig[0] === 'feesPaidToSynthetix' ? 'cyan.500' : ''
+                    }
+                  >
+                    Fees for Synthetix
+                    {sortConfig[0] === 'feesPaidToSynthetix' &&
+                      (sortConfig[1] ? <ChevronDownIcon /> : <ChevronUpIcon />)}
+                  </Th>
+                  <Th
+                    cursor="pointer"
+                    onClick={() => {
                       setSortConfig((state) => ['long', !state[1]]);
                       triggerRefetch();
                     }}
                     border={sortConfig[0] === 'long' ? '1px solid' : ''}
                     borderColor={sortConfig[0] === 'long' ? 'cyan.500' : ''}
                   >
-                    Long
+                    Side
                     {sortConfig[0] === 'long' &&
                       (sortConfig[1] ? <ChevronDownIcon /> : <ChevronUpIcon />)}
                   </Th>
@@ -406,6 +461,19 @@ export const PositionsTable: FC = () => {
                                 position.account.length - 5
                               )
                             )}
+                          <IconButton
+                            marginLeft="2"
+                            variant="ghost"
+                            aria-label="link to optimisim etherscan"
+                            icon={<ExternalLinkIcon />}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              window.open(
+                                'https://optimistic.etherscan.io/address/' +
+                                  position.account
+                              );
+                            }}
+                          />
                         </Td>
                         <Td>{position.asset}</Td>
                         <Td>{position.market}</Td>
@@ -424,12 +492,32 @@ export const PositionsTable: FC = () => {
                             (Number(position.size) *
                               Number(position.lastPrice)) /
                               Number(position.margin) /
-                              10e18
+                              1e18
                           )
                             .toFixed(2)
-                            .concat('%')}
+                            .concat('x')}
                         </Td>
-                        <Td>{position.long ? `📈` : `📉`}</Td>
+                        <Td>
+                          $
+                          {numberWithCommas(
+                            (Number(position.margin) / 1e18).toFixed(2)
+                          )}
+                        </Td>
+                        <Td>
+                          $
+                          {numberWithCommas(
+                            (Number(position.size) / 1e18).toFixed(2)
+                          )}
+                        </Td>
+                        <Td>
+                          $
+                          {numberWithCommas(
+                            (
+                              Number(position.feesPaidToSynthetix) / 1e18
+                            ).toFixed(2)
+                          )}
+                        </Td>
+                        <Td>{position.long ? 'Long' : 'Short'}</Td>
                         <Td>{position.isLiquidated ? `💀` : `NO`}</Td>
                         <Td>{position.isOpen ? `✅` : `❌`}</Td>
                         <Td>{position?.openTimestamp}</Td>
