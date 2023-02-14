@@ -626,6 +626,15 @@ export class FuturesPosition extends Entity {
     this.set("pnl", Value.fromBigInt(value));
   }
 
+  get fundingIndex(): BigInt {
+    let value = this.get("fundingIndex");
+    return value!.toBigInt();
+  }
+
+  set fundingIndex(value: BigInt) {
+    this.set("fundingIndex", Value.fromBigInt(value));
+  }
+
   get totalVolume(): BigInt {
     let value = this.get("totalVolume");
     return value!.toBigInt();
@@ -799,5 +808,75 @@ export class FuturesOrder extends Entity {
 
   set keeper(value: Bytes) {
     this.set("keeper", Value.fromBytes(value));
+  }
+}
+
+export class FundingRateUpdate extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save FundingRateUpdate entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type FundingRateUpdate must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("FundingRateUpdate", id.toString(), this);
+    }
+  }
+
+  static load(id: string): FundingRateUpdate | null {
+    return changetype<FundingRateUpdate | null>(
+      store.get("FundingRateUpdate", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get timestamp(): BigInt {
+    let value = this.get("timestamp");
+    return value!.toBigInt();
+  }
+
+  set timestamp(value: BigInt) {
+    this.set("timestamp", Value.fromBigInt(value));
+  }
+
+  get market(): Bytes {
+    let value = this.get("market");
+    return value!.toBytes();
+  }
+
+  set market(value: Bytes) {
+    this.set("market", Value.fromBytes(value));
+  }
+
+  get sequenceLength(): BigInt {
+    let value = this.get("sequenceLength");
+    return value!.toBigInt();
+  }
+
+  set sequenceLength(value: BigInt) {
+    this.set("sequenceLength", Value.fromBigInt(value));
+  }
+
+  get funding(): BigInt {
+    let value = this.get("funding");
+    return value!.toBigInt();
+  }
+
+  set funding(value: BigInt) {
+    this.set("funding", Value.fromBigInt(value));
   }
 }

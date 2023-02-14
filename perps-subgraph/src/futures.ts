@@ -4,6 +4,7 @@ import {
   PositionModified as PositionModifiedEvent,
   DelayedOrderRemoved as DelayedOrderRemovedEvent,
   DelayedOrderSubmitted as DelayedOrderSubmittedEvent,
+  FundingRecomputed as FundingRecomputedEvent,
 } from '../generated/PerpsV2MarketProxyable/PerpsV2MarketProxyable';
 import {
   PositionLiquidated,
@@ -12,6 +13,7 @@ import {
   FuturesPosition,
   FuturesOrder,
   FuturesTrade,
+  FundingRateUpdate,
 } from '../generated/schema';
 
 export function handlePositionLiquidated(event: PositionLiquidatedEvent): void {
@@ -59,6 +61,9 @@ export function handlePositionLiquidated(event: PositionLiquidatedEvent): void {
       futuresPosition.isOpen = false;
       futuresPosition.size = BigInt.fromI32(0);
       futuresPosition.closeTimestamp = event.block.timestamp;
+      futuresPosition.pnl = futuresPosition.feesPaidToSynthetix.minus(
+        futuresPosition.netFunding
+      );
       synthetix.totalVolume = synthetix.totalVolume.plus(
         futuresPosition.totalVolume.toBigDecimal()
       );
@@ -123,6 +128,7 @@ export function handlePositionModified(event: PositionModifiedEvent): void {
     futuresPosition.trades = BigInt.fromI32(1);
     futuresPosition.long = event.params.tradeSize.gt(BigInt.fromI32(0));
     futuresPosition.market = event.address;
+    futuresPosition.fundingIndex = event.params.fundingIndex;
     // We update the leverage only when the user interacted with with the position
     futuresPosition.leverage = event.params.size
       .times(event.params.lastPrice)
@@ -196,9 +202,9 @@ export function handlePositionModified(event: PositionModifiedEvent): void {
       futuresPosition.isOpen = false;
       futuresPosition.exitPrice = event.params.lastPrice;
       futuresPosition.closeTimestamp = event.block.timestamp;
-      futuresPosition.feesPaidToSynthetix = futuresPosition.feesPaidToSynthetix.plus(
-        event.params.fee
-      );
+      futuresPosition.feesPaidToSynthetix = futuresPosition.feesPaidToSynthetix
+        .plus(event.params.fee)
+        .minus(futuresPosition.netFunding);
       futuresPosition.margin = event.params.margin;
       futuresPosition.size = event.params.size;
       futuresPosition.lastPrice = event.params.lastPrice;
@@ -229,7 +235,7 @@ export function handlePositionModified(event: PositionModifiedEvent): void {
         // doing that in the liquidation event
         trader.pnl = trader.pnl.plus(newPnl);
         const oldTrades = trader.trades;
-        oldTrades!.push(tradeEntity.id);
+        oldTrades.push(tradeEntity.id);
         trader.trades = oldTrades;
       }
 
@@ -294,7 +300,7 @@ export function handlePositionModified(event: PositionModifiedEvent): void {
         trader.totalVolume = trader.totalVolume.plus(volume.toBigDecimal());
         trader.pnl = trader.pnl.plus(newPnl);
         const oldTrades = trader.trades;
-        oldTrades!.push(tradeEntity.id);
+        oldTrades.push(tradeEntity.id);
         trader.trades = oldTrades;
       }
 
@@ -305,7 +311,32 @@ export function handlePositionModified(event: PositionModifiedEvent): void {
       log.debug('went into nothing', []);
     }
   }
+  // if there is an existing position...
+  if (futuresPosition.fundingIndex != event.params.fundingIndex) {
+    // add accrued funding to position
+    let pastFundingEntity = FundingRateUpdate.load(
+      event.address.toHex() + '-' + futuresPosition.fundingIndex.toString()
+    );
 
+    let currentFundingEntity = FundingRateUpdate.load(
+      event.address.toHex() + '-' + event.params.fundingIndex.toString()
+    );
+
+    if (pastFundingEntity && currentFundingEntity) {
+      // add accrued funding
+      let fundingAccrued = currentFundingEntity.funding
+        .minus(pastFundingEntity.funding)
+        .times(futuresPosition.size)
+        .div(BigInt.fromI32(10).pow(18));
+
+      futuresPosition.netFunding = futuresPosition.netFunding.plus(
+        fundingAccrued
+      );
+      trader!.feesPaidToSynthetix = trader!.feesPaidToSynthetix.minus(
+        fundingAccrued.toBigDecimal()
+      );
+    }
+  }
   trader!.save();
   synthetix.save();
   futuresPosition.save();
@@ -376,11 +407,8 @@ export function handleDelayedOrderRemoved(
 export function handleDelayedOrderSubmitted(
   event: DelayedOrderSubmittedEvent
 ): void {
-  const futuresOrderEntityId = `$${event.params.account.toHexString()}-${event.params.targetRoundId.toString()}`;
-  let futuresOrderEntity = FuturesOrder.load(futuresOrderEntityId);
-  if (futuresOrderEntity == null) {
-    futuresOrderEntity = new FuturesOrder(futuresOrderEntityId);
-  }
+  const futuresOrderEntityId = `${event.params.account.toHex()}-${event.params.targetRoundId.toString()}`;
+  const futuresOrderEntity = new FuturesOrder(futuresOrderEntityId);
   futuresOrderEntity.size = event.params.sizeDelta;
   futuresOrderEntity.market = event.address;
   futuresOrderEntity.account = event.params.account;
@@ -397,4 +425,16 @@ export function handleDelayedOrderSubmitted(
     '0x0000000000000000000000000000000000000000'
   );
   futuresOrderEntity.save();
+}
+
+export function handleFundingRecomputed(event: FundingRecomputedEvent): void {
+  let futuresMarketAddress = event.address as Address;
+  let fundingRateUpdateEntity = new FundingRateUpdate(
+    futuresMarketAddress.toHex() + '-' + event.params.index.toString()
+  );
+  fundingRateUpdateEntity.timestamp = event.params.timestamp;
+  fundingRateUpdateEntity.market = futuresMarketAddress;
+  fundingRateUpdateEntity.sequenceLength = event.params.index;
+  fundingRateUpdateEntity.funding = event.params.funding;
+  fundingRateUpdateEntity.save();
 }

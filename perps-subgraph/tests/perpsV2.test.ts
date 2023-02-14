@@ -1,4 +1,4 @@
-import { Address, BigInt, log } from '@graphprotocol/graph-ts';
+import { Address, BigInt, Bytes, log } from '@graphprotocol/graph-ts';
 import {
   assert,
   describe,
@@ -7,8 +7,16 @@ import {
   logStore,
   afterEach,
 } from 'matchstick-as/assembly/index';
-import { createPositionModifiedEvent } from './perpsV2-utils';
-import { handlePositionModified } from '../src/futures';
+import {
+  createDelayedOrderRemovedEvent,
+  createDelayedOrderSubmittedEvent,
+  createPositionModifiedEvent,
+} from './perpsV2-utils';
+import {
+  handleDelayedOrderRemoved,
+  handleDelayedOrderSubmitted,
+  handlePositionModified,
+} from '../src/futures';
 
 const trader = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
 function toEth(n: i32): BigInt {
@@ -470,4 +478,273 @@ describe('Perps V2', () => {
     );
     assert.entityCount('FuturesTrade', 2);
   });
+
+  test('should create a FuturesOrder entity', () => {
+    const delayedOrderSubmittedEvent = createDelayedOrderSubmittedEvent(
+      Address.fromString(trader),
+      true,
+      toEth(1),
+      BigInt.fromI32(2),
+      BigInt.fromI32(500),
+      BigInt.fromI32(600),
+      toEth(2),
+      toEth(1),
+      Bytes.fromHexString('0xKwenta'),
+      10
+    );
+    handleDelayedOrderSubmitted(delayedOrderSubmittedEvent);
+
+    // FUTURES ORDER
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'id',
+      trader.toLowerCase() + '-2'
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'size',
+      toEth(1).toString()
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'market',
+      delayedOrderSubmittedEvent.address.toHex()
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'account',
+      trader.toLowerCase()
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'orderId',
+      '2'
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'targetRoundId',
+      '2'
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'targetPrice',
+      '0'
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'marginDelta',
+      '0'
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'timestamp',
+      '10'
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'orderType',
+      'DelayedOffchainSubmitted'
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'status',
+      'Pending'
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'keeper',
+      '0x0000000000000000000000000000000000000000'
+    );
+  });
+
+  test('should update a FuturesOrder entity', () => {
+    const delayedOrderSubmittedEvent = createDelayedOrderSubmittedEvent(
+      Address.fromString(trader),
+      true,
+      toEth(1),
+      BigInt.fromI32(2),
+      BigInt.fromI32(500),
+      BigInt.fromI32(600),
+      toEth(2),
+      toEth(1),
+      Bytes.fromHexString('0xKwenta'),
+      10
+    );
+    handleDelayedOrderSubmitted(delayedOrderSubmittedEvent);
+
+    // FUTURES ORDER
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'id',
+      trader.toLowerCase() + '-2'
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'size',
+      toEth(1).toString()
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'market',
+      delayedOrderSubmittedEvent.address.toHex()
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'account',
+      trader.toLowerCase()
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'orderId',
+      '2'
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'targetRoundId',
+      '2'
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'targetPrice',
+      '0'
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'marginDelta',
+      '0'
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'timestamp',
+      '10'
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'orderType',
+      'DelayedOffchainSubmitted'
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'status',
+      'Pending'
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'keeper',
+      '0x0000000000000000000000000000000000000000'
+    );
+
+    const delayedOrderRemovedEvent = createDelayedOrderRemovedEvent(
+      Address.fromString(trader),
+      true,
+      BigInt.fromI32(2),
+      toEth(1),
+      BigInt.fromI32(2),
+      toEth(2),
+      toEth(1),
+      Bytes.fromHexString('0xKwenta'),
+      20
+    );
+    handleDelayedOrderRemoved(delayedOrderRemovedEvent);
+
+    // FUTURES ORDER
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'id',
+      trader.toLowerCase() + '-2'
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'size',
+      toEth(1).toString()
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'market',
+      delayedOrderSubmittedEvent.address.toHex()
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'account',
+      trader.toLowerCase()
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'orderId',
+      '2'
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'targetRoundId',
+      '2'
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'targetPrice',
+      '0'
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'marginDelta',
+      '0'
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'timestamp',
+      '10'
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'orderType',
+      'DelayedOffchainSubmitted'
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'status',
+      'Pending'
+    );
+    assert.fieldEquals(
+      'FuturesOrder',
+      trader.toLowerCase() + '-2',
+      'keeper',
+      '0x0000000000000000000000000000000000000000'
+    );
+  });
+
+  test('open, modify and close a position', () => {});
 });
