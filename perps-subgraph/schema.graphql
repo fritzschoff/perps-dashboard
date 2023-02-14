@@ -54,6 +54,7 @@ type Synthetix @entity {
   id: ID!
   feesByLiquidations: BigDecimal!
   feesByPositionModifications: BigDecimal!
+  totalLiquidations: BigInt!
   totalVolume: BigDecimal!
 }
 

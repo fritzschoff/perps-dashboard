@@ -64,11 +64,15 @@ export interface FilterOptions {
   deactivateClosedAt: boolean;
 }
 
-const body = (
-  filterOptions: FilterOptions,
-  sortConfig: SortConfig,
-  address?: string,
-  skip?: number,
+const body = ({
+  filterOptions,
+  sortConfig,
+  market,
+  address,
+  skip,
+}: {
+  filterOptions: FilterOptions;
+  sortConfig: SortConfig;
   market:
     | {
         maxLeverage: string;
@@ -76,8 +80,10 @@ const body = (
         asset: string;
         id: string;
       }[]
-    | undefined
-) => {
+    | undefined;
+  address?: string;
+  skip?: number;
+}) => {
   return `query info {
     futuresPositions(skip: ${skip}, first: 1000,
       orderBy: "${sortConfig[0]}", orderDirection: "${
@@ -169,13 +175,13 @@ const refetchMore = async ({
   const response = await fetch(PERPS_V2_DASHBOARD_GRAPH_URL, {
     method: 'POST',
     body: JSON.stringify({
-      query: body(
+      query: body({
         filterOptions,
         sortConfig,
-        address?.toLowerCase(),
+        market: marketData,
         skip,
-        marketData
-      ),
+        address: address?.toLowerCase(),
+      }),
     }),
   });
 

@@ -391,6 +391,15 @@ export class Synthetix extends Entity {
     this.set("feesByPositionModifications", Value.fromBigDecimal(value));
   }
 
+  get totalLiquidations(): BigInt {
+    let value = this.get("totalLiquidations");
+    return value!.toBigInt();
+  }
+
+  set totalLiquidations(value: BigInt) {
+    this.set("totalLiquidations", Value.fromBigInt(value));
+  }
+
   get totalVolume(): BigDecimal {
     let value = this.get("totalVolume");
     return value!.toBigDecimal();

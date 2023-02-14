@@ -17,7 +17,7 @@ function toEth(n: i32): BigInt {
 
 /**
  * - check pnl calc
- *
+ * - add leverage to subgraph
  */
 
 describe('Perps V2', () => {

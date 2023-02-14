@@ -27,39 +27,55 @@ export function handlePositionLiquidated(event: PositionLiquidatedEvent): void {
   positionLiquidatedEntity.block = event.block.number;
   positionLiquidatedEntity.save();
 
-  let synthetix = Synthetix.load('synthetix');
+  const tradeEntity = FuturesTrade.load(
+    event.transaction.hash.toHex() +
+      '-' +
+      event.logIndex.minus(BigInt.fromI32(1)).toString()
+  );
+  if (tradeEntity) {
+    tradeEntity.size = event.params.size.times(BigInt.fromI32(-1));
+    tradeEntity.positionSize = BigInt.fromI32(0);
+    tradeEntity.feesPaidToSynthetix = tradeEntity.feesPaidToSynthetix.plus(
+      event.params.fee
+    );
+    tradeEntity.pnl = tradeEntity.pnl.plus(event.params.fee);
+    tradeEntity.save();
+  }
+
+  const synthetix = Synthetix.load('synthetix');
   if (synthetix) {
     synthetix.feesByLiquidations = synthetix.feesByLiquidations.plus(
       event.params.fee.toBigDecimal()
     );
-
-    let futuresPosition = FuturesPosition.load(
-      event.address.toHex() + '-' + event.params.id.toHex()
+    synthetix.totalLiquidations = synthetix.totalLiquidations.plus(
+      BigInt.fromI32(1)
     );
 
+    const futuresPosition = FuturesPosition.load(
+      event.address.toHex() + '-' + event.params.id.toHex()
+    );
     if (futuresPosition) {
       futuresPosition.isLiquidated = true;
       futuresPosition.isOpen = false;
       futuresPosition.size = BigInt.fromI32(0);
+      futuresPosition.closeTimestamp = event.block.timestamp;
       synthetix.totalVolume = synthetix.totalVolume.plus(
         futuresPosition.totalVolume.toBigDecimal()
       );
       futuresPosition.save();
     }
-    let trader = Trader.load(event.params.account.toHex());
-    if (trader) {
-      trader.feesPaidToSynthetix = trader.feesPaidToSynthetix.plus(
-        event.params.fee.toBigDecimal()
-      );
-      trader.totalLiquidations = trader.totalLiquidations.plus(
-        BigInt.fromI32(1)
-      );
-      trader.totalMarginLiquidated = trader.totalMarginLiquidated.plus(
-        event.params.size.toBigDecimal()
-      );
-      trader.save();
-    }
     synthetix.save();
+  }
+  let trader = Trader.load(event.params.account.toHex());
+  if (trader) {
+    trader.feesPaidToSynthetix = trader.feesPaidToSynthetix.plus(
+      event.params.fee.toBigDecimal()
+    );
+    trader.totalLiquidations = trader.totalLiquidations.plus(BigInt.fromI32(1));
+    trader.totalMarginLiquidated = trader.totalMarginLiquidated.plus(
+      event.params.size.toBigDecimal()
+    );
+    trader.save();
   }
 }
 
@@ -76,6 +92,7 @@ export function handlePositionModified(event: PositionModifiedEvent): void {
     synthetix = new Synthetix('synthetix');
     synthetix.feesByPositionModifications = event.params.fee.toBigDecimal();
     synthetix.feesByLiquidations = BigDecimal.fromString('0');
+    synthetix.totalLiquidations = BigInt.fromI32(0);
     synthetix.totalVolume = event.params.tradeSize
       .times(event.params.lastPrice)
       .div(BigInt.fromI32(10).pow(18))
