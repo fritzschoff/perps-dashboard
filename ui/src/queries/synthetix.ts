@@ -11,6 +11,8 @@ export function useGetSynthetix() {
                         feesByLiquidations
                         feesByPositionModifications
                         totalVolume
+                        totalLiquidations
+                        totalTraders
                     }
                 }`,
       }),
@@ -23,6 +25,8 @@ export function useGetSynthetix() {
           feesByLiquidations: string;
           feesByPositionModifications: string;
           totalVolume: string;
+          totalLiquidations: string;
+          totalTraders: string;
         };
       };
     } = await response.json();

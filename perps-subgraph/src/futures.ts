@@ -164,9 +164,7 @@ export function handlePositionModified(event: PositionModifiedEvent): void {
       trader.trades = [
         event.transaction.hash.toHex() + '-' + event.logIndex.toString(),
       ];
-      if (synthetix) {
-        synthetix.totalTraders = synthetix.totalTraders.plus(BigInt.fromI32(1));
-      }
+      synthetix.totalTraders = synthetix.totalTraders.plus(BigInt.fromI32(1));
     } else {
       trader.feesPaidToSynthetix = trader.feesPaidToSynthetix.plus(
         event.params.fee.toBigDecimal()
@@ -334,10 +332,8 @@ export function handlePositionModified(event: PositionModifiedEvent): void {
       );
     }
   }
-  // TODO @MF Trader seems to be undefined sometimes??
-  if (trader) {
-    trader.save();
-  }
+
+  trader!.save();
   synthetix.save();
   futuresPosition.save();
 }

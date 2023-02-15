@@ -246,10 +246,6 @@ export const PositionsTable: FC = () => {
                       <Text>Liquidations: {stats.totalLiquidations}</Text>
                       <Text>PNL: ${(Number(stats.pnl) / 1e18).toFixed(2)}</Text>
                       <Text>Total trades: {stats.trades.length}</Text>
-                      {/* <Text>
-                        Total volume: $
-                        {(Number(stats.) / 1e18).toFixed(2)}
-                      </Text> */}
                     </Flex>
                   );
                 })}
@@ -507,13 +503,16 @@ export const PositionsTable: FC = () => {
                         <Td>{position.asset}</Td>
                         <Td>{position.market}</Td>
                         <Td>
-                          ${(Number(position.entryPrice) / 1e18).toFixed(2)}
+                          $
+                          {numberWithCommas(
+                            (Number(position.entryPrice) / 1e18).toFixed(2)
+                          )}
                         </Td>
                         <Td>
                           {position.isOpen
                             ? '-'
-                            : `$${(Number(position.exitPrice) / 1e18).toFixed(
-                                2
+                            : `$${numberWithCommas(
+                                (Number(position.exitPrice) / 1e18).toFixed(2)
                               )}`}
                         </Td>
                         <Td>

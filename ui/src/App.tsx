@@ -76,6 +76,14 @@ function App() {
               (Number(data.synthetix.totalVolume) / 1e18).toFixed(2)
             )}
           </Text>
+          <Text>
+            Total Liquidations:&nbsp;
+            {numberWithCommas(data.synthetix.totalLiquidations)}
+          </Text>
+          <Text>
+            Total Traders:&nbsp;
+            {numberWithCommas(data.synthetix.totalTraders)}
+          </Text>
         </Flex>
       )}
       <Divider m="2" />
