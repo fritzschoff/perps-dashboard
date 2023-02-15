@@ -147,7 +147,17 @@ export const Actions: FC = () => {
                     )}
                     <Text>Market:&nbsp;{event.market}</Text>
                   </Flex>
-
+                  <Flex>
+                    <Text>
+                      Fee: $
+                      {numberWithCommas(
+                        (
+                          Number(event['feesPaidToSynthetix'] || event['fee']) /
+                          1e18
+                        ).toFixed(2)
+                      )}
+                    </Text>
+                  </Flex>
                   {/* <Text>Status:&nbsp;{event.status}</Text> */}
                   {'keeper' in event && (
                     <Text
@@ -184,7 +194,14 @@ export const Actions: FC = () => {
                       />
                     </Text>
                   )}
-                  {'pnl' && event && <Text>PNL:&nbsp;{event.pnl}</Text>}
+                  {'pnl' && event && (
+                    <Text>
+                      PNL:&nbsp;
+                      {numberWithCommas(
+                        (Number(event.pnl) / 1e18).toFixed(2)
+                      ).concat('%')}
+                    </Text>
+                  )}
                   {'orderId' && event && (
                     <Text>Order ID:&nbsp;{event.orderId}</Text>
                   )}

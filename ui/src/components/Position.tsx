@@ -13,11 +13,18 @@ export const Position: FC<{ id: string; trade: FuturesTrades }> = ({
   }
   return (
     <Flex>
-      <Text>
+      <Text
+        border="1px solid"
+        px="2"
+        borderRadius="base"
+        borderColor={data?.futuresPosition.long ? 'green.500' : 'red.500'}
+      >
         {trade.size === trade.positionSize
           ? `Position opened and going ${
               data?.futuresPosition.long ? 'long' : 'short'
             }`
+          : Number(data?.futuresPosition.size) !== 0 && Number(trade.size) > 0
+          ? 'Increased the position size'
           : ''}
       </Text>
     </Flex>

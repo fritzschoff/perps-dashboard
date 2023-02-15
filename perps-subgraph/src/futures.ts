@@ -337,57 +337,58 @@ export function handleDelayedOrderRemoved(
   let statEntity = Trader.load(event.params.account.toHex());
   let synthetix = Synthetix.load('synthetix');
   if (synthetix) {
-    synthetix.feesByLiquidations = synthetix.feesByLiquidations.plus(
+    synthetix.feesByPositionModifications = synthetix.feesByPositionModifications.plus(
       event.params.keeperDeposit.toBigDecimal()
     );
-    if (futuresOrderEntity) {
-      futuresOrderEntity.keeper = event.transaction.from;
-      let tradeEntity = FuturesTrade.load(
-        event.transaction.hash.toHex() +
-          '-' +
-          event.logIndex.minus(BigInt.fromI32(1)).toString()
-      );
+  }
+  if (futuresOrderEntity) {
+    futuresOrderEntity.fee = event.params.keeperDeposit;
+    futuresOrderEntity.keeper = event.transaction.from;
+    let tradeEntity = FuturesTrade.load(
+      event.transaction.hash.toHex() +
+        '-' +
+        event.logIndex.minus(BigInt.fromI32(1)).toString()
+    );
 
-      if (statEntity && tradeEntity) {
-        // if trade exists get the position
-        let positionEntity = FuturesPosition.load(tradeEntity.positionId);
+    if (statEntity && tradeEntity) {
+      // if trade exists get the position
+      let positionEntity = FuturesPosition.load(tradeEntity.positionId);
 
-        // update order values
-        futuresOrderEntity.status = 'Filled';
-        tradeEntity.type = futuresOrderEntity.orderType;
+      // update order values
+      futuresOrderEntity.status = 'Filled';
+      tradeEntity.type = futuresOrderEntity.orderType;
 
-        // add fee if not self-executed
-        if (futuresOrderEntity.keeper != futuresOrderEntity.account) {
-          tradeEntity.feesPaidToSynthetix = tradeEntity.feesPaidToSynthetix.plus(
+      // add fee if not self-executed
+      if (futuresOrderEntity.keeper != futuresOrderEntity.account) {
+        tradeEntity.feesPaidToSynthetix = tradeEntity.feesPaidToSynthetix.plus(
+          event.params.keeperDeposit
+        );
+        statEntity.feesPaidToSynthetix = statEntity.feesPaidToSynthetix.plus(
+          event.params.keeperDeposit.toBigDecimal()
+        );
+        if (positionEntity) {
+          positionEntity.feesPaidToSynthetix = positionEntity.feesPaidToSynthetix.plus(
             event.params.keeperDeposit
           );
-          statEntity.feesPaidToSynthetix = statEntity.feesPaidToSynthetix.plus(
-            event.params.keeperDeposit.toBigDecimal()
-          );
-          if (positionEntity) {
-            positionEntity.feesPaidToSynthetix = positionEntity.feesPaidToSynthetix.plus(
-              event.params.keeperDeposit
-            );
-            positionEntity.save();
-          }
-
-          statEntity.save();
+          positionEntity.save();
         }
 
-        tradeEntity.save();
-      } else if (statEntity) {
-        if (futuresOrderEntity.keeper != futuresOrderEntity.account) {
-          statEntity.feesPaidToSynthetix = statEntity.feesPaidToSynthetix.plus(
-            event.params.keeperDeposit.toBigDecimal()
-          );
-          statEntity.save();
-        }
-
-        futuresOrderEntity.status = 'Cancelled';
+        statEntity.save();
       }
 
-      futuresOrderEntity.save();
+      tradeEntity.save();
+    } else if (statEntity) {
+      if (futuresOrderEntity.keeper != futuresOrderEntity.account) {
+        statEntity.feesPaidToSynthetix = statEntity.feesPaidToSynthetix.plus(
+          event.params.keeperDeposit.toBigDecimal()
+        );
+        statEntity.save();
+      }
+
+      futuresOrderEntity.status = 'Cancelled';
     }
+
+    futuresOrderEntity.save();
   }
 }
 
@@ -398,6 +399,7 @@ export function handleDelayedOrderSubmitted(
   const futuresOrderEntity = new FuturesOrder(futuresOrderEntityId);
   futuresOrderEntity.size = event.params.sizeDelta;
   futuresOrderEntity.market = event.address;
+  futuresOrderEntity.fee = BigInt.fromI32(0);
   futuresOrderEntity.account = event.params.account;
   futuresOrderEntity.orderId = event.params.targetRoundId;
   futuresOrderEntity.targetRoundId = event.params.targetRoundId;

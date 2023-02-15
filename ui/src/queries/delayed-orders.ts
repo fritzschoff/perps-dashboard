@@ -18,6 +18,7 @@ export interface DelayedOrder {
   targetPrice: string;
   marginDelta: string;
   timestamp: string;
+  fee: string;
   keeper: string;
   status: string;
   entity: string;
@@ -35,6 +36,7 @@ export const useGetDelayedOrder = () => {
                       size
                       market
                       account
+                      fee
                       orderId
                       targetRoundId
                       targetPrice

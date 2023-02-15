@@ -810,6 +810,15 @@ export class FuturesOrder extends Entity {
     this.set("status", Value.fromString(value));
   }
 
+  get fee(): BigInt {
+    let value = this.get("fee");
+    return value!.toBigInt();
+  }
+
+  set fee(value: BigInt) {
+    this.set("fee", Value.fromBigInt(value));
+  }
+
   get keeper(): Bytes {
     let value = this.get("keeper");
     return value!.toBytes();
