@@ -51,6 +51,7 @@ export type SortConfig = [
     | 'size'
     | 'margin'
     | 'feesPaidToSynthetix'
+    | 'leverage'
   ),
   boolean
 ];
@@ -328,7 +329,19 @@ export const PositionsTable: FC = () => {
                     {sortConfig[0] === 'exitPrice' &&
                       (sortConfig[1] ? <ChevronDownIcon /> : <ChevronUpIcon />)}
                   </Th>
-                  <Th>Leverage</Th>
+                  <Th
+                    cursor="pointer"
+                    onClick={() => {
+                      setSortConfig((state) => ['leverage', !state[1]]);
+                      triggerRefetch();
+                    }}
+                    border={sortConfig[0] === 'leverage' ? '1px solid' : ''}
+                    borderColor={sortConfig[0] === 'leverage' ? 'cyan.500' : ''}
+                  >
+                    Leverage
+                    {sortConfig[0] === 'leverage' &&
+                      (sortConfig[1] ? <ChevronDownIcon /> : <ChevronUpIcon />)}
+                  </Th>
                   <Th
                     cursor="pointer"
                     onClick={() => {
@@ -504,12 +517,7 @@ export const PositionsTable: FC = () => {
                               )}`}
                         </Td>
                         <Td>
-                          {Math.abs(
-                            (Number(position.size) *
-                              Number(position.lastPrice)) /
-                              Number(position.margin) /
-                              1e18
-                          )
+                          {Math.abs(Number(position.leverage) / 1e18)
                             .toFixed(2)
                             .concat('x')}
                         </Td>

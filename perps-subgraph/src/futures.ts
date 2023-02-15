@@ -64,6 +64,7 @@ export function handlePositionLiquidated(event: PositionLiquidatedEvent): void {
       futuresPosition.pnl = futuresPosition.feesPaidToSynthetix.minus(
         futuresPosition.netFunding
       );
+      futuresPosition.exitPrice = event.params.price;
       synthetix.totalVolume = synthetix.totalVolume.plus(
         futuresPosition.totalVolume.toBigDecimal()
       );
@@ -333,7 +334,10 @@ export function handlePositionModified(event: PositionModifiedEvent): void {
       );
     }
   }
-  trader!.save();
+  // TODO @MF Trader seems to be undefined sometimes??
+  if (trader) {
+    trader.save();
+  }
   synthetix.save();
   futuresPosition.save();
 }
