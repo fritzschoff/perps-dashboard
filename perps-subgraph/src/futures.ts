@@ -21,6 +21,7 @@ export function handlePositionLiquidated(event: PositionLiquidatedEvent): void {
     event.params.id.toString()
   );
   positionLiquidatedEntity.account = event.params.account;
+  positionLiquidatedEntity.market = event.address;
   positionLiquidatedEntity.liquidator = event.params.liquidator;
   positionLiquidatedEntity.size = event.params.size.toBigDecimal();
   positionLiquidatedEntity.price = event.params.price.toBigDecimal();
@@ -85,6 +86,8 @@ export function handlePositionLiquidated(event: PositionLiquidatedEvent): void {
   }
 }
 
+// TODO @MF check if long property is correct? seems off
+
 export function handlePositionModified(event: PositionModifiedEvent): void {
   const positionId = event.address.toHex() + '-' + event.params.id.toHex();
   let futuresPosition = FuturesPosition.load(positionId);
@@ -104,7 +107,29 @@ export function handlePositionModified(event: PositionModifiedEvent): void {
       .abs()
       .toBigDecimal();
   }
-
+  if (!trader) {
+    trader = new Trader(event.params.account.toHex());
+    trader.totalLiquidations = BigInt.fromI32(0);
+    trader.totalMarginLiquidated = BigDecimal.fromString('0');
+    trader.feesPaidToSynthetix = event.params.fee.toBigDecimal();
+    trader.totalVolume = event.params.tradeSize.toBigDecimal();
+    trader.pnl = event.params.fee.times(BigInt.fromI32(-1));
+    trader.trades = [
+      event.transaction.hash.toHex() + '-' + event.logIndex.toString(),
+    ];
+    synthetix.totalTraders = synthetix.totalTraders.plus(BigInt.fromI32(1));
+  } else {
+    trader.feesPaidToSynthetix = trader.feesPaidToSynthetix.plus(
+      event.params.fee.toBigDecimal()
+    );
+    // trader.totalVolume = event.params.tradeSize.toBigDecimal();
+    trader.pnl = trader.pnl.plus(event.params.fee.times(BigInt.fromI32(-1)));
+    const oldTrades = trader.trades;
+    oldTrades.push(
+      event.transaction.hash.toHex() + '-' + event.logIndex.toString()
+    );
+    trader.trades = oldTrades;
+  }
   // New position when var futuresPosition is undefined
   if (!futuresPosition) {
     log.info('new position', []);
@@ -153,28 +178,6 @@ export function handlePositionModified(event: PositionModifiedEvent): void {
     tradeEntity.positionClosed = false;
     tradeEntity.type = 'PositionOpened';
     tradeEntity.save();
-
-    if (!trader) {
-      trader = new Trader(event.params.account.toHex());
-      trader.totalLiquidations = BigInt.fromI32(0);
-      trader.totalMarginLiquidated = BigDecimal.fromString('0');
-      trader.feesPaidToSynthetix = event.params.fee.toBigDecimal();
-      trader.totalVolume = event.params.tradeSize.toBigDecimal();
-      trader.pnl = event.params.fee.times(BigInt.fromI32(-1));
-      trader.trades = [
-        event.transaction.hash.toHex() + '-' + event.logIndex.toString(),
-      ];
-      synthetix.totalTraders = synthetix.totalTraders.plus(BigInt.fromI32(1));
-    } else {
-      trader.feesPaidToSynthetix = trader.feesPaidToSynthetix.plus(
-        event.params.fee.toBigDecimal()
-      );
-      trader.totalVolume = event.params.tradeSize.toBigDecimal();
-      trader.pnl = trader.pnl.plus(event.params.fee.times(BigInt.fromI32(-1)));
-      const oldTrades = trader.trades;
-      oldTrades.push(tradeEntity.id);
-      trader.trades = oldTrades;
-    }
   } else {
     // Position closed & not liquidated
     if (
@@ -222,14 +225,8 @@ export function handlePositionModified(event: PositionModifiedEvent): void {
       tradeEntity.positionClosed = true;
       tradeEntity.type = 'PositionClosed';
       tradeEntity.save();
-      if (trader) {
-        // no need to add the fees to the trader entity because we are
-        // doing that in the liquidation event
-        trader.pnl = trader.pnl.plus(newPnl);
-        const oldTrades = trader.trades;
-        oldTrades.push(tradeEntity.id);
-        trader.trades = oldTrades;
-      }
+
+      trader.pnl = trader.pnl.plus(newPnl);
 
       synthetix.feesByPositionModifications = synthetix.feesByPositionModifications.plus(
         event.params.fee.toBigDecimal()
@@ -285,16 +282,10 @@ export function handlePositionModified(event: PositionModifiedEvent): void {
         .div(BigInt.fromI32(10).pow(18))
         .abs();
 
-      if (trader) {
-        trader.feesPaidToSynthetix = trader.feesPaidToSynthetix.plus(
-          event.params.fee.toBigDecimal()
-        );
-        trader.totalVolume = trader.totalVolume.plus(volume.toBigDecimal());
-        trader.pnl = trader.pnl.plus(newPnl);
-        const oldTrades = trader.trades;
-        oldTrades.push(tradeEntity.id);
-        trader.trades = oldTrades;
-      }
+      trader.feesPaidToSynthetix = trader.feesPaidToSynthetix.plus(
+        event.params.fee.toBigDecimal()
+      );
+      trader.totalVolume = trader.totalVolume.plus(volume.toBigDecimal());
 
       synthetix.totalVolume = synthetix.totalVolume.plus(volume.toBigDecimal());
       synthetix.feesByPositionModifications = synthetix.feesByPositionModifications.plus(
@@ -327,13 +318,13 @@ export function handlePositionModified(event: PositionModifiedEvent): void {
       futuresPosition.netFunding = futuresPosition.netFunding.plus(
         fundingAccrued
       );
-      trader!.feesPaidToSynthetix = trader!.feesPaidToSynthetix.minus(
+      trader.feesPaidToSynthetix = trader.feesPaidToSynthetix.minus(
         fundingAccrued.toBigDecimal()
       );
     }
   }
 
-  trader!.save();
+  trader.save();
   synthetix.save();
   futuresPosition.save();
 }

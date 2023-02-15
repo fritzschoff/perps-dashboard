@@ -28,6 +28,7 @@ export interface FuturePosition {
   leverage: string;
   totalVolume: string;
   exitPrice: string;
+  pnl: string;
   size: string;
   feesPaidToSynthetix: string;
   maxLeverage: string;
@@ -130,6 +131,7 @@ const body = ({
       initialMargin
       entryPrice
       lastPrice
+      pnl
       exitPrice
       leverage
       size

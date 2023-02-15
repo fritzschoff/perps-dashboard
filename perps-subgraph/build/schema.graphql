@@ -1,6 +1,7 @@
 type PositionLiquidated @entity {
   id: ID!
   account: Bytes!
+  market: Bytes!
   liquidator: Bytes!
   size: BigDecimal!
   price: BigDecimal!

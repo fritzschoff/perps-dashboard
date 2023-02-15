@@ -53,6 +53,15 @@ export class PositionLiquidated extends Entity {
     this.set("account", Value.fromBytes(value));
   }
 
+  get market(): Bytes {
+    let value = this.get("market");
+    return value!.toBytes();
+  }
+
+  set market(value: Bytes) {
+    this.set("market", Value.fromBytes(value));
+  }
+
   get liquidator(): Bytes {
     let value = this.get("liquidator");
     return value!.toBytes();

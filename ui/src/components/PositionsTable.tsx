@@ -341,6 +341,19 @@ export const PositionsTable: FC = () => {
                   <Th
                     cursor="pointer"
                     onClick={() => {
+                      setSortConfig((state) => ['pnl', !state[1]]);
+                      triggerRefetch();
+                    }}
+                    border={sortConfig[0] === 'pnl' ? '1px solid' : ''}
+                    borderColor={sortConfig[0] === 'pnl' ? 'cyan.500' : ''}
+                  >
+                    PNL
+                    {sortConfig[0] === 'pnl' &&
+                      (sortConfig[1] ? <ChevronDownIcon /> : <ChevronUpIcon />)}
+                  </Th>
+                  <Th
+                    cursor="pointer"
+                    onClick={() => {
                       setSortConfig((state) => ['margin', !state[1]]);
                       triggerRefetch();
                     }}
@@ -519,6 +532,11 @@ export const PositionsTable: FC = () => {
                           {Math.abs(Number(position.leverage) / 1e18)
                             .toFixed(2)
                             .concat('x')}
+                        </Td>
+                        <Td>
+                          {numberWithCommas(
+                            (Number(position.pnl) / 1e18).toFixed(2)
+                          ).concat('%')}
                         </Td>
                         <Td>
                           $
